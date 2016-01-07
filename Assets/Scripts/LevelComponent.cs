@@ -9,7 +9,7 @@ public class LevelComponent : MonoBehaviour {
 	public GameObject safePrefab;
 
 	[HideInInspector]
-	public List<Vector3> safePositions;
+	public List<GameObject> safeGameObjects;
 
 	void Start () {
 		// init level
@@ -21,7 +21,7 @@ public class LevelComponent : MonoBehaviour {
 		float safeHeight = safePrefab.GetComponent<Renderer> ().bounds.size.y;
 		Vector3 offset;
 		Quaternion rotation;
-		safePositions = new List<Vector3> ();
+		safeGameObjects = new List<GameObject> ();
 
 		foreach(var tmp_safe in level.Safes){
 			// offset from prefab's original position
@@ -40,7 +40,7 @@ public class LevelComponent : MonoBehaviour {
             go.GetComponent<Renderer>().material.color = tmp_safe.DisplayColor;
 
 			// add camera waypoint
-			safePositions.Add(go.transform.position);
+			safeGameObjects.Add(go);
 
 			i++;
 		}

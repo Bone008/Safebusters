@@ -11,7 +11,7 @@ public class CamMovement : MonoBehaviour {
 
 	void Update () {
 		// amount of safes (shorter)
-		int safeCount = level.safePositions.Count;
+		int safeCount = level.safeGameObjects.Count;
 
 		// if focussedSafe isnt active anymore -> focus next active one
 		while (!level.level.Safes [focussedSafe].IsActive) {
@@ -31,6 +31,6 @@ public class CamMovement : MonoBehaviour {
 		}
 
 		// smoothly move cam to focussed safe
-		transform.position = Vector3.Lerp (transform.position, level.safePositions[focussedSafe] + new Vector3(0, 0, zOffset), Time.deltaTime * speed);
+		transform.position = Vector3.Lerp (transform.position, level.safeGameObjects[focussedSafe].transform.position + new Vector3(0, 0, zOffset), Time.deltaTime * speed);
 	}
 }
