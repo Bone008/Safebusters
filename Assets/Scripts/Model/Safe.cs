@@ -15,7 +15,7 @@ namespace Model
 
         public Safe()
         {
-            DisplayColor = Color.cyan;
+            DisplayColor = (Random.value > 0.5 ? new Color(0.5f, 0.7f, 0.6f) : new Color(0.7f, 0.7f, 0.5f));
             IsBackwards = false;
 
             if (Random.value > 0.3)

@@ -11,20 +11,16 @@ namespace Model
         public Level()
         {
             Safes = new List<Safe>();
+            Safes.Add(new Safe() { IsOpen = true, IsActive = false });
             Safes.Add(new Safe());
             Safes.Add(new Safe());
+            Safes.Add(new Safe() { IsActive = false });
             Safes.Add(new Safe());
             Safes.Add(new Safe());
-			Safes.Add(new Safe());
-			Safes.Add(new Safe());
-			Safes.Add(new Safe());
-			Safes.Add(new Safe());
-			Safes.Add(new Safe());
-
-			// Testing backwards safe
-			Safe x = new Safe ();
-			x.IsBackwards = true;
-			Safes.Add (x);
+            Safes.Add(new Safe() { IsBackwards = true });
+            Safes.Add(new Safe());
+            Safes.Add(new Safe());
+            Safes.Add(new Safe() { IsBackwards = true });
         }
     }
 }

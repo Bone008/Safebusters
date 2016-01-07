@@ -33,6 +33,8 @@ public class LevelComponent : MonoBehaviour {
 			var go = Instantiate(safePrefab, safePrefab.transform.position + offset, rotation) as GameObject;
 			go.transform.parent = transform;
 
+            go.GetComponent<Renderer>().material.color = tmp_safe.DisplayColor;
+
 			i++;
 		}
 	}
