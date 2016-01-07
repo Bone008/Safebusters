@@ -3,18 +3,18 @@ using System.Collections;
 
 public class CamMovement : MonoBehaviour {
 
-	public GameObject level;
+	public LevelComponent level;
 	public float zOffset;
 	public float speed;
 
 	int focussedSafe = 0;
 
-	void Update () {	
-		// amount of safes == childcount of level gameobject	
-		int safeCount = level.transform.childCount;
+	void Update () {
+		// amount of safes (shorter)
+		int safeCount = level.safePositions.Count;
 
 		// if focussedSafe isnt active anymore -> focus next active one
-		while (!level.GetComponent<LevelComponent> ().level.Safes [focussedSafe].IsActive) {
+		while (!level.level.Safes [focussedSafe].IsActive) {
 			focussedSafe = (focussedSafe + 1) % safeCount;
 		}
 
@@ -27,14 +27,10 @@ public class CamMovement : MonoBehaviour {
 				} else {
 					focussedSafe = (focussedSafe + safeCount - 1) % safeCount;
 				}
-			} while(!level.GetComponent<LevelComponent> ().level.Safes [focussedSafe].IsActive);
+			} while(!level.level.Safes [focussedSafe].IsActive);
 		}
 
 		// smoothly move cam to focussed safe
-		transform.position = Vector3.Lerp (
-			transform.position, 
-			level.transform.GetChild (focussedSafe).transform.position + new Vector3(0, 0, zOffset), 
-			Time.deltaTime * speed
-		);
+		transform.position = Vector3.Lerp (transform.position, level.safePositions[focussedSafe] + new Vector3(0, 0, zOffset), Time.deltaTime * speed);
 	}
 }
