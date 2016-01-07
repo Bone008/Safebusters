@@ -20,7 +20,7 @@ public class LevelComponent : MonoBehaviour {
 
 		foreach(var tmp_safe in level.Safes){
 			// offset from prefab's original position
-			offset = new Vector3(0, -safeWidth * (int) (i / level.SafesPerRow), safeHeight * (i % level.SafesPerRow));
+            offset = new Vector3(safeHeight * (i % level.SafesPerRow), -safeWidth * (int)(i / level.SafesPerRow), 0);
 
 			// rotation: safe backwards -> turn around
 			if(tmp_safe.IsBackwards){
