@@ -13,17 +13,13 @@ namespace Model
         public bool IsOpen { get; set; }
         public bool IsActive { get; set; }
 
-        public Safe()
+		public Safe(IChallenge challenge, Color displayColor, int numberOfSafesToActivate)
         {
-            DisplayColor = (Random.value > 0.5 ? new Color(0.5f, 0.7f, 0.6f) : new Color(0.7f, 0.7f, 0.5f));
-            IsBackwards = false;
+			DisplayColor = displayColor;
+			IsBackwards = (Random.value > 0.5f);
+			Challenge = challenge;
+			NumberOfSafesToActivate = numberOfSafesToActivate;
 
-            if (Random.value > 0.3)
-                Challenge = new ButtonChallenge();
-            else
-                Challenge = new PlaceholderChallenge();
-
-            NumberOfSafesToActivate = 1;
             IsOpen = false;
             IsActive = true;
         }
