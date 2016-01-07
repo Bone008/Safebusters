@@ -13,14 +13,14 @@ public class LevelComponent : MonoBehaviour {
 
 		// instantiate safes from prefab
 		int i = 0;
-		float safeWidth = safePrefab.GetComponent<Renderer> ().bounds.size.y;
-		float safeHeight = safePrefab.GetComponent<Renderer> ().bounds.size.z;
+		float safeWidth = safePrefab.GetComponent<Renderer> ().bounds.size.x;
+		float safeHeight = safePrefab.GetComponent<Renderer> ().bounds.size.y;
 		Vector3 offset;
 		Quaternion rotation;
 
 		foreach(var tmp_safe in level.Safes){
 			// offset from prefab's original position
-            offset = new Vector3(safeHeight * (i % level.SafesPerRow), -safeWidth * (int)(i / level.SafesPerRow), 0);
+            offset = new Vector3(safeWidth * (i % level.SafesPerRow), -safeHeight * (int)(i / level.SafesPerRow), 0);
 
 			// rotation: safe backwards -> turn around
 			if(tmp_safe.IsBackwards){
