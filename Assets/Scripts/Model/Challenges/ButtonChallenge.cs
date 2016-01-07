@@ -4,22 +4,24 @@ using System.Collections.Generic;
 
 namespace Model.Challenges
 {
-    public class ButtonChallenge : IChallenge
+    public class ButtonChallenge : AbstractChallenge
     {
-        public bool HasFrontInput { get { return true; } }
+        private GameButton buttonsToPress;
 
-        public bool HasBackInput { get { return false; } }
-
-        public InputResult receiveFrontInput(InputCommand input)
+        public ButtonChallenge()
+            : base(true, false)
         {
-            // TODO
-            Debug.Log("received input");
-            return InputResult.None;
+            buttonsToPress = GameButton.Left | GameButton.Bottom;
         }
 
-        public InputResult receiveBackInput(InputCommand input)
+        public override InputResult receiveFrontInput(InputCommand command, InputState state)
         {
-            throw new NotImplementedException();
+            Debug.Log("received input");
+            
+            if (state.PressedButtons == buttonsToPress)
+                return InputResult.Solved;
+
+            return InputResult.None;
         }
     }
 }

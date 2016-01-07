@@ -6,8 +6,8 @@ namespace Model
         bool HasFrontInput { get; }
         bool HasBackInput { get; }
 
-        InputResult receiveFrontInput(InputCommand input);
-        InputResult receiveBackInput(InputCommand input);
+        InputResult receiveFrontInput(InputCommand command, InputState state);
+        InputResult receiveBackInput(InputCommand command, InputState state);
     }
 
     public enum InputResult
@@ -15,6 +15,7 @@ namespace Model
         Solved, Error, None
     }
 
-    // TODO
+    // TODO make this meaningful or remove it
     public class InputCommand { }
+
 }
