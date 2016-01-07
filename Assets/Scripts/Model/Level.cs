@@ -15,6 +15,16 @@ namespace Model
             Safes.Add(new Safe());
             Safes.Add(new Safe());
             Safes.Add(new Safe());
+			Safes.Add(new Safe());
+			Safes.Add(new Safe());
+			Safes.Add(new Safe());
+			Safes.Add(new Safe());
+			Safes.Add(new Safe());
+
+			// Testing backwards safe
+			Safe x = new Safe ();
+			x.IsBackwards = true;
+			Safes.Add (x);
         }
     }
 }
