@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using System.IO.Ports;
-using Model;
 
 public class CustomButtonReader : MonoBehaviour {
 
