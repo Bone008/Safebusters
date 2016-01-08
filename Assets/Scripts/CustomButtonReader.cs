@@ -31,14 +31,20 @@ public class CustomButtonReader : MonoBehaviour {
 #endregion
 
 	void Start () {
-		//Try opening the Serial Stream
-        stream.Open(); 
-		if (stream.IsOpen) {
-			connected = true;
-			Debug.Log ("Serial Port opened.");
-		} else {
-			connected = false;
-		}
+        if (!noCactus)
+        {
+            //Try opening the Serial Stream
+            stream.Open();
+            if (stream.IsOpen)
+            {
+                connected = true;
+                Debug.Log("Serial Port opened.");
+            }
+            else
+            {
+                connected = false;
+            }
+        }
 	}
 	
 	void Update () {
@@ -52,11 +58,11 @@ public class CustomButtonReader : MonoBehaviour {
 			buttonVal = 0;
 		}
 		checkButtonsPressed (buttonVal);
-		Debug.Log ("Up: "+UpPressed+" Down: "+DownPressed+" Left: "+LeftPressed+" Right: "+RightPressed+" FarLeft: "+FarLeftPressed+" FarRight: "+FarRightPressed);
+		//Debug.Log ("Up: "+UpPressed+" Down: "+DownPressed+" Left: "+LeftPressed+" Right: "+RightPressed+" FarLeft: "+FarLeftPressed+" FarRight: "+FarRightPressed);
 	}
 
 	void checkButtonsPressed(int buttonVal){
-		UpPressed = ((buttonVal & buttonMasks [0]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.A));
+		UpPressed = ((buttonVal & buttonMasks [0]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.W));
 		DownPressed = ((buttonVal & buttonMasks [1]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.S));			
 		LeftPressed = ((buttonVal & buttonMasks [2]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.A));
 		RightPressed = ((buttonVal & buttonMasks [3]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.D));

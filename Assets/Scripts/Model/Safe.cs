@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Model
 {
-    public class Safe
+    public class Safe : MonoBehaviour
     {
         public Color DisplayColor { get; set; }
         public bool IsBackwards { get; set; }
@@ -12,6 +12,7 @@ namespace Model
 
         public bool IsOpen { get; set; }
         public bool IsActive { get; set; }
+        public float timeSinceActive { get; set; }
 
 		public Safe(IChallenge challenge, Color displayColor, int numberOfSafesToActivate)
         {
@@ -22,6 +23,11 @@ namespace Model
 
             IsOpen = false;
             IsActive = true;
+        }
+
+        void Update() {
+            timeSinceActive += Time.deltaTime;
+            //Debug.Log(gameObject.name+" active since: "+timeSinceActive+" seconds");
         }
     }
 }

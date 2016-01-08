@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Model
 {
-    public class Level
+    public class Level : MonoBehaviour
     {
-        private const int SAFE_COUNT = 12;
+        public int SAFE_COUNT = 12;
 
         //public List<ColorGroup> ColorGroups { get { return new List<ColorGroup>(); } }
 		public Color[] ColorGroups { get; set; }
@@ -21,29 +21,35 @@ namespace Model
 				new Color (0.7f, 0.7f, 0.5f)
 			};
 
-			// create random safes (not spawned yet)
+			// create empty list of safes
             Safes = new List<Safe>();
-            for (int i = 0; i < SAFE_COUNT; i++)
-            {
-				// get challenge
-				IChallenge challenge;
-				if (Random.value > 0.3)
-					challenge = new ButtonChallenge();
-				else
-					challenge = new PlaceholderChallenge();
+        }
 
-				// get random colorgroup
-				Color color = ColorGroups[Random.Range(0, ColorGroups.Length)];
+        public Safe CreateSafeScriptOnGO(GameObject currentSafe) {
+            // get challenge
+            IChallenge challenge;
+            if (Random.value > 0.3)
+                challenge = new ButtonChallenge();
+            else
+                challenge = new PlaceholderChallenge();
 
-				// get number of safes to activate
-				int numberToActivate = 1; // complicated algorithm
+            // get random colorgroup
+            Color color = ColorGroups[Random.Range(0, ColorGroups.Length)];
 
-				// add new safe to list
-				Safes.Add (new Safe (challenge, color, numberToActivate) {
-					IsActive = Random.value > 0.2f, /* remove later */
-					IsOpen = Random.value < 0.1f /* remove later */					
-				});
-			}
+            // get number of safes to activate
+            int numberToActivate = 1; // complicated algorithm
+
+            Safe instance = currentSafe.AddComponent<Safe>();
+
+            instance.Challenge = challenge;
+            instance.DisplayColor = color;
+            instance.NumberOfSafesToActivate = numberToActivate;
+            instance.IsActive = Random.value > 0.2f; /* remove later */
+            instance.IsOpen = Random.value < 0.1f; /* remove later */
+            instance.IsBackwards = (Random.value > 0.5f);
+            // add new safe to list
+            Safes.Add(instance);
+            return instance;
         }
     }
 }
