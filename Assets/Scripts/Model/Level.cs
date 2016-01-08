@@ -6,10 +6,11 @@ namespace Model
 {
     public class Level
     {
+        private const int SAFE_COUNT = 12;
+
         //public List<ColorGroup> ColorGroups { get { return new List<ColorGroup>(); } }
 		public Color[] ColorGroups { get; set; }
 		public List<Safe> Safes { get; set; }
-		public int SafeCount { get { return 12; } }
         public int SafesPerRow { get { return 4; } }
 
         public Level()
@@ -22,7 +23,8 @@ namespace Model
 
 			// create random safes (not spawned yet)
             Safes = new List<Safe>();
-			for (int i = 0; i < SafeCount; i++) {
+            for (int i = 0; i < SAFE_COUNT; i++)
+            {
 				// get challenge
 				IChallenge challenge;
 				if (Random.value > 0.3)

@@ -10,7 +10,7 @@ public class LevelComponent : MonoBehaviour {
 	public GameObject safePrefab;
     [SerializeField]
     [Tooltip("The final scale of a safe instance")]
-    float safeSize = 1;
+    public float safeSize = 1;
 
     //Hidden in Inspector
 	[HideInInspector]
@@ -18,25 +18,29 @@ public class LevelComponent : MonoBehaviour {
 
 	void Start () {
 		// init level
-		level = new Level ();
+		level = new Level();
 
 		// instantiate safes from prefab
 		int i = 0;
-		float safeWidth = safePrefab.GetComponent<Renderer> ().bounds.size.x*(safeSize);
-        float safeHeight = safePrefab.GetComponent<Renderer> ().bounds.size.y * (safeSize);
+		float safeWidth = safePrefab.GetComponent<Renderer> ().bounds.size.x * safeSize;
+        float safeHeight = safePrefab.GetComponent<Renderer> ().bounds.size.y * safeSize;
 		Vector3 offset;
 		Quaternion rotation;
 		safeGameObjects = new List<GameObject> ();
 
-		foreach(var tmp_safe in level.Safes){
+        int rows = Mathf.CeilToInt(level.Safes.Count / (float)level.SafesPerRow);
+        Vector3 baseOffset = new Vector3((-level.SafesPerRow + 1) * safeWidth / 2, rows * safeHeight - safeHeight / 2, 0);
 
-            //Instantiate safe at origo
+		foreach(var tmp_safe in level.Safes) {
+
+            //Instantiate safe
             var go = Instantiate(safePrefab, Vector3.zero, Quaternion.identity) as GameObject;
+            go.transform.SetParent(transform);
 
             //Scale safe
             go.transform.localScale *= safeSize;
 
-            // offset from prefab's original position
+            // offset from top left position
             offset = new Vector3(safeWidth * (i % level.SafesPerRow), -safeHeight * (int)(i / level.SafesPerRow), 0);
 
 			// rotation: safe backwards -> turn around
@@ -45,9 +49,9 @@ public class LevelComponent : MonoBehaviour {
 			}else{
 				rotation = Quaternion.identity;
 			}
-            go.transform.position = offset;
-            go.transform.rotation = rotation;
-			go.transform.parent = transform;
+
+            go.transform.localPosition = baseOffset + offset;
+            go.transform.localRotation = rotation;
             go.GetComponent<Renderer>().material.color = tmp_safe.DisplayColor;
 
 			// add camera waypoint
