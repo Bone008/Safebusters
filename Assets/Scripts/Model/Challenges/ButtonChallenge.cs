@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Model.Challenges
@@ -7,16 +8,25 @@ namespace Model.Challenges
     public class ButtonChallenge : AbstractChallenge
     {
         private GameButton buttonsToPress;
+		private int numButtons = 2;
 
-        public ButtonChallenge()
-            : base(true, false)
+        public ButtonChallenge() : base(true, false)
         {
-            buttonsToPress = GameButton.Left | GameButton.Bottom;
+			// Pick [numButtons] random GameButtons as buttonsToPress
+			List<GameButton> values = Enum.GetValues (typeof(GameButton)).Cast<GameButton>().ToList();
+			buttonsToPress = GameButton.None;
+			for (int i = 0; i < numButtons; i++) {
+				int randomIndex = UnityEngine.Random.Range (1, values.Count);
+				buttonsToPress |= values[randomIndex];
+				values.RemoveAt (randomIndex);
+			}
         }
 
         public override InputResult receiveFrontInput(InputCommand command, InputState state)
         {         
-            if (state.PressedButtons == buttonsToPress)
+			Debug.Log ("Buttonchallenge: " + buttonsToPress.ToString () + " <= " + state.PressedButtons.ToString ());
+            
+			if (state.PressedButtons == buttonsToPress)
                 return InputResult.Solved;
 
             return InputResult.None;
