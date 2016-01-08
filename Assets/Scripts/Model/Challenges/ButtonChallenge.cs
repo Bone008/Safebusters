@@ -24,12 +24,18 @@ namespace Model.Challenges
 
         public override InputResult receiveFrontInput(InputCommand command, InputState state)
         {         
-			Debug.Log ("Buttonchallenge: " + buttonsToPress.ToString () + " <= " + state.PressedButtons.ToString ());
+			//Debug.Log ("Buttonchallenge: " + buttonsToPress.ToString () + " <= " + state.PressedButtons.ToString ());
             
-			if (state.PressedButtons == buttonsToPress)
-                return InputResult.Solved;
-
-            return InputResult.None;
+			// Right Combination -> Solved
+			// Wrong Combination -> Error
+			// No Input -> None
+			if (state.PressedButtons == buttonsToPress) {
+				return InputResult.Solved;
+			} else if (state.PressedButtons == GameButton.None) {
+				return InputResult.None;
+			} else {
+				return InputResult.Error;
+			}
         }
     }
 }

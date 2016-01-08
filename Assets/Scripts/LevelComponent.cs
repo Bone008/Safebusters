@@ -70,7 +70,13 @@ public class LevelComponent : MonoBehaviour {
 		CustomButtonReader input = GetComponent<CustomButtonReader> ();
 		Safe fs = level.Safes [focussedSafe];
 		if (fs.IsActive) {
-			fs.Challenge.receiveFrontInput (null, input.inputState);
+			InputResult result = fs.Challenge.receiveFrontInput (null, input.inputState);
+			if (result == InputResult.Solved) {
+				Debug.Log ("solved!");
+				fs.IsActive = false;
+			} else if (result == InputResult.Error) {
+				Debug.Log ("lost life!");
+			}
 		}
 	}
 }

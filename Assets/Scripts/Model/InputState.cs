@@ -8,6 +8,7 @@ namespace Model
 
         private float[] analogInputs = new float[5];
 
+		public GameButton HeldButtons { get; set; }
         public GameButton PressedButtons { get; set; }
         public Vector3 Acceleration { get; set; }
 

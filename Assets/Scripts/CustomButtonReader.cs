@@ -24,13 +24,17 @@ public class CustomButtonReader : MonoBehaviour {
 		2048  //Far Right
     };
 
-#region publicly available button repots
-	public bool UpPressed;
-	public bool DownPressed;
-	public bool LeftPressed;
-	public bool RightPressed;
+#region button variables used in checkButtonsHeld & checkButtonsPressed
+	bool UpPressed;
+	bool DownPressed;
+	bool LeftPressed;
+	bool RightPressed;
 	public bool FarLeftPressed;
 	public bool FarRightPressed;
+	bool UpHeld;
+	bool DownHeld;
+	bool LeftHeld;
+	bool RightHeld;
 #endregion
 
 	void Start () {
@@ -63,17 +67,35 @@ public class CustomButtonReader : MonoBehaviour {
 			buttonVal = 0;
 		}
 
+		inputState.HeldButtons = checkButtonsHeld (buttonVal);
 		inputState.PressedButtons = checkButtonsPressed (buttonVal);
 		//Debug.Log ("Up: "+UpPressed+" Down: "+DownPressed+" Left: "+LeftPressed+" Right: "+RightPressed+" FarLeft: "+FarLeftPressed+" FarRight: "+FarRightPressed);
 	}
 
+	// returns all gamebuttons, that are held down
+	GameButton checkButtonsHeld(int buttonVal){
+		UpHeld = ((buttonVal & buttonMasks [0]) != 0) || (noCactus && Input.GetKey(KeyCode.W));
+		DownHeld = ((buttonVal & buttonMasks [1]) != 0) || (noCactus && Input.GetKey(KeyCode.S));			
+		LeftHeld = ((buttonVal & buttonMasks [2]) != 0) || (noCactus && Input.GetKey(KeyCode.A));
+		RightHeld = ((buttonVal & buttonMasks [3]) != 0) || (noCactus && Input.GetKey(KeyCode.D));
+
+		return (UpHeld ? GameButton.Top : GameButton.None) |
+			(DownHeld ? GameButton.Bottom : GameButton.None) |
+			(LeftHeld ? GameButton.Left : GameButton.None) |
+			(RightHeld ? GameButton.Right : GameButton.None);
+	}
+
+	// returns all gamebuttons, that were pressed in this frame
 	GameButton checkButtonsPressed(int buttonVal){
-		UpPressed = ((buttonVal & buttonMasks [0]) != 0) || (noCactus && Input.GetKey(KeyCode.W));
-		DownPressed = ((buttonVal & buttonMasks [1]) != 0) || (noCactus && Input.GetKey(KeyCode.S));			
-		LeftPressed = ((buttonVal & buttonMasks [2]) != 0) || (noCactus && Input.GetKey(KeyCode.A));
-		RightPressed = ((buttonVal & buttonMasks [3]) != 0) || (noCactus && Input.GetKey(KeyCode.D));
+		// TODO: Stop buttonspam farleft/farright
 		FarLeftPressed = ((buttonVal & buttonMasks [4]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.LeftArrow));
 		FarRightPressed = ((buttonVal & buttonMasks [5]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.RightArrow));	
+
+		// TODO: Add same for Cactus controller
+		UpPressed = noCactus && Input.GetKeyDown(KeyCode.W);
+		DownPressed = noCactus && Input.GetKeyDown(KeyCode.S);			
+		LeftPressed = noCactus && Input.GetKeyDown(KeyCode.A);
+		RightPressed = noCactus && Input.GetKeyDown(KeyCode.D);
 
 		return (UpPressed ? GameButton.Top : GameButton.None) |
 		(DownPressed ? GameButton.Bottom : GameButton.None) |
