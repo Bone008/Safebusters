@@ -5,11 +5,14 @@ using System.IO.Ports;
 
 public class CustomButtonReader : MonoBehaviour {
 
+	public bool noCactus = true;
+
     SerialPort stream = new SerialPort("COM3", 115200);
     string receivedData = "EMPTY";
+	int buttonVal;
+	bool connected = false;
 
     int[] buttonMasks = new int[]{
-		32,  //Nichts
 		64,  //Up
 		128,  //Down
         256, //Left
@@ -27,54 +30,37 @@ public class CustomButtonReader : MonoBehaviour {
 	public bool FarRightPressed;
 #endregion
 
-	// Use this for initialization
 	void Start () {
-        stream.Open(); //Open the Serial Stream.
-        Debug.Log("Serial Port opened.");
+		//Try opening the Serial Stream
+        stream.Open(); 
+		if (stream.IsOpen) {
+			connected = true;
+			Debug.Log ("Serial Port opened.");
+		} else {
+			connected = false;
+		}
 	}
 	
-	// Update is called once per frame
 	void Update () {
-        //Read button input
-        stream.Write("1");
-        receivedData = stream.ReadLine();
-
-        int buttonVal = System.Convert.ToInt32(receivedData, 16);   //convert input hex string to actual hex int
-		Debug.Log((buttonVal-32-15).ToString());
-		PressButton(buttonVal);
+        //Read button input if connected
+		if (connected) {
+			stream.Write ("1");
+			receivedData = stream.ReadLine ();
+			buttonVal = System.Convert.ToInt32 (receivedData, 16);   //convert input hex string to actual hex int
+			Debug.Log ((buttonVal - 32 - 15).ToString ());
+		} else {
+			buttonVal = 0;
+		}
+		checkButtonsPressed (buttonVal);
 		Debug.Log ("Up: "+UpPressed+" Down: "+DownPressed+" Left: "+LeftPressed+" Right: "+RightPressed+" FarLeft: "+FarLeftPressed+" FarRight: "+FarRightPressed);
 	}
 
-	void PressButton(int buttonVal){
-		if ((buttonVal & buttonMasks [1]) != 0) {
-			UpPressed = true;
-		} else {
-			UpPressed = false;
-		}
-		if ((buttonVal & buttonMasks [2]) != 0) {
-			DownPressed = true;
-		} else {
-			DownPressed = false;
-		}
-		if ((buttonVal & buttonMasks [3]) != 0) {
-			LeftPressed = true;
-		} else {
-			LeftPressed = false;
-		}
-		if ((buttonVal & buttonMasks [4]) != 0) {
-			RightPressed = true;
-		} else {
-			RightPressed = false;
-		}
-		if ((buttonVal & buttonMasks [5]) != 0) {
-			FarLeftPressed = true;
-		} else {
-			FarLeftPressed = false;
-		}
-		if ((buttonVal & buttonMasks [6]) != 0) {
-			FarRightPressed = true;
-		} else {
-			FarRightPressed = false;
-		}
+	void checkButtonsPressed(int buttonVal){
+		UpPressed = ((buttonVal & buttonMasks [0]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.A));
+		DownPressed = ((buttonVal & buttonMasks [1]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.S));			
+		LeftPressed = ((buttonVal & buttonMasks [2]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.A));
+		RightPressed = ((buttonVal & buttonMasks [3]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.D));
+		FarLeftPressed = ((buttonVal & buttonMasks [4]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.LeftArrow));
+		FarRightPressed = ((buttonVal & buttonMasks [5]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.RightArrow));			
 	}
 }

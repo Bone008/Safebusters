@@ -4,6 +4,7 @@ using System.Collections;
 public class CamMovement : MonoBehaviour {
 
 	public LevelComponent level;
+	public CustomButtonReader input;
 	public float zOffset;
 	public float speed;
 
@@ -18,17 +19,15 @@ public class CamMovement : MonoBehaviour {
 			focussedSafe = (focussedSafe + 1) % safeCount;
 		}
 
-		// TODO: replace by cactus-controller buttons
-		if (Input.GetButtonDown ("Horizontal")) {
-			// focus next active safe
-			do {
-				if (Input.GetAxisRaw ("Horizontal") > 0) {
-					focussedSafe = (focussedSafe + 1) % safeCount;
-				} else {
-					focussedSafe = (focussedSafe + safeCount - 1) % safeCount;
-				}
-			} while(!level.level.Safes [focussedSafe].IsActive);
-		}
+		// far left/right key pressed -> focus next active safe
+		do {
+			if (input.FarRightPressed) {
+				focussedSafe = (focussedSafe + 1) % safeCount;
+			}
+			if (input.FarLeftPressed) {				
+				focussedSafe = (focussedSafe + safeCount - 1) % safeCount;
+			}
+		} while(!level.level.Safes [focussedSafe].IsActive);
 
 		// smoothly move cam to focussed safe
 		transform.position = Vector3.Lerp (transform.position, level.safeGameObjects[focussedSafe].transform.position + new Vector3(0, 0, zOffset), Time.deltaTime * speed);
