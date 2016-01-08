@@ -26,10 +26,10 @@ namespace Model
     public enum GameButton
     {
         None = 0,
-        Bottom = 1,
-        Top = 2,
-        Right = 4,
-        Left = 8
+        Top = 1,
+		Bottom = 2,
+		Left = 4,
+        Right = 8
     }
 
     public enum GameAnalogInput

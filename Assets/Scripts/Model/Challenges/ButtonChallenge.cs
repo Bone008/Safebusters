@@ -15,9 +15,7 @@ namespace Model.Challenges
         }
 
         public override InputResult receiveFrontInput(InputCommand command, InputState state)
-        {
-            Debug.Log("received input");
-            
+        {         
             if (state.PressedButtons == buttonsToPress)
                 return InputResult.Solved;
 

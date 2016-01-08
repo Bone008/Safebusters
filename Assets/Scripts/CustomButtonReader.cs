@@ -2,10 +2,13 @@
 using System;
 using System.Collections;
 using System.IO.Ports;
+using Model;
 
 public class CustomButtonReader : MonoBehaviour {
 
 	public bool noCactus = true;
+
+	public InputState inputState { get; set; }
 
     SerialPort stream = new SerialPort("COM3", 115200);
     string receivedData = "EMPTY";
@@ -48,6 +51,8 @@ public class CustomButtonReader : MonoBehaviour {
 	}
 	
 	void Update () {
+		inputState = new InputState ();
+
         //Read button input if connected
 		if (connected) {
 			stream.Write ("1");
@@ -57,16 +62,22 @@ public class CustomButtonReader : MonoBehaviour {
 		} else {
 			buttonVal = 0;
 		}
-		checkButtonsPressed (buttonVal);
+
+		inputState.PressedButtons = checkButtonsPressed (buttonVal);
 		//Debug.Log ("Up: "+UpPressed+" Down: "+DownPressed+" Left: "+LeftPressed+" Right: "+RightPressed+" FarLeft: "+FarLeftPressed+" FarRight: "+FarRightPressed);
 	}
 
-	void checkButtonsPressed(int buttonVal){
-		UpPressed = ((buttonVal & buttonMasks [0]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.W));
-		DownPressed = ((buttonVal & buttonMasks [1]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.S));			
-		LeftPressed = ((buttonVal & buttonMasks [2]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.A));
-		RightPressed = ((buttonVal & buttonMasks [3]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.D));
+	GameButton checkButtonsPressed(int buttonVal){
+		UpPressed = ((buttonVal & buttonMasks [0]) != 0) || (noCactus && Input.GetKey(KeyCode.W));
+		DownPressed = ((buttonVal & buttonMasks [1]) != 0) || (noCactus && Input.GetKey(KeyCode.S));			
+		LeftPressed = ((buttonVal & buttonMasks [2]) != 0) || (noCactus && Input.GetKey(KeyCode.A));
+		RightPressed = ((buttonVal & buttonMasks [3]) != 0) || (noCactus && Input.GetKey(KeyCode.D));
 		FarLeftPressed = ((buttonVal & buttonMasks [4]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.LeftArrow));
-		FarRightPressed = ((buttonVal & buttonMasks [5]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.RightArrow));			
+		FarRightPressed = ((buttonVal & buttonMasks [5]) != 0) || (noCactus && Input.GetKeyDown(KeyCode.RightArrow));	
+
+		return (UpPressed ? GameButton.Top : GameButton.None) |
+		(DownPressed ? GameButton.Bottom : GameButton.None) |
+		(LeftPressed ? GameButton.Left : GameButton.None) |
+		(RightPressed ? GameButton.Right : GameButton.None);
 	}
 }

@@ -17,6 +17,8 @@ public class LevelComponent : MonoBehaviour {
 	public List<GameObject> safeGameObjects;
     [HideInInspector]
     public Level level;
+	[HideInInspector]
+	public int focussedSafe = 0;
 
     void Start () {
 		// init level
@@ -65,6 +67,10 @@ public class LevelComponent : MonoBehaviour {
 	}
 	
 	void Update () {
-	
+		CustomButtonReader input = GetComponent<CustomButtonReader> ();
+		Safe fs = level.Safes [focussedSafe];
+		if (fs.IsActive) {
+			fs.Challenge.receiveFrontInput (null, input.inputState);
+		}
 	}
 }
