@@ -5,9 +5,14 @@ using Model;
 
 public class LevelComponent : MonoBehaviour {
 
+    //Shown in Inspector
 	public Level level;
 	public GameObject safePrefab;
+    [SerializeField]
+    [Tooltip("The final scale of a safe instance")]
+    float safeSize = 1;
 
+    //Hidden in Inspector
 	[HideInInspector]
 	public List<GameObject> safeGameObjects;
 
@@ -17,14 +22,21 @@ public class LevelComponent : MonoBehaviour {
 
 		// instantiate safes from prefab
 		int i = 0;
-		float safeWidth = safePrefab.GetComponent<Renderer> ().bounds.size.x;
-		float safeHeight = safePrefab.GetComponent<Renderer> ().bounds.size.y;
+		float safeWidth = safePrefab.GetComponent<Renderer> ().bounds.size.x*(safeSize);
+        float safeHeight = safePrefab.GetComponent<Renderer> ().bounds.size.y * (safeSize);
 		Vector3 offset;
 		Quaternion rotation;
 		safeGameObjects = new List<GameObject> ();
 
 		foreach(var tmp_safe in level.Safes){
-			// offset from prefab's original position
+
+            //Instantiate safe at origo
+            var go = Instantiate(safePrefab, Vector3.zero, Quaternion.identity) as GameObject;
+
+            //Scale safe
+            go.transform.localScale *= safeSize;
+
+            // offset from prefab's original position
             offset = new Vector3(safeWidth * (i % level.SafesPerRow), -safeHeight * (int)(i / level.SafesPerRow), 0);
 
 			// rotation: safe backwards -> turn around
@@ -33,9 +45,8 @@ public class LevelComponent : MonoBehaviour {
 			}else{
 				rotation = Quaternion.identity;
 			}
-
-			// instantiate new safe with offset and rotation, set level as parent
-			var go = Instantiate(safePrefab, safePrefab.transform.position + offset, rotation) as GameObject;
+            go.transform.position = offset;
+            go.transform.rotation = rotation;
 			go.transform.parent = transform;
             go.GetComponent<Renderer>().material.color = tmp_safe.DisplayColor;
 

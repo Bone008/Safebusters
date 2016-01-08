@@ -20,7 +20,7 @@ namespace Model
 				new Color (0.7f, 0.7f, 0.5f)
 			};
 
-			// create random safes
+			// create random safes (not spawned yet)
             Safes = new List<Safe>();
 			for (int i = 0; i < SafeCount; i++) {
 				// get challenge
@@ -33,7 +33,7 @@ namespace Model
 				// get random colorgroup
 				Color color = ColorGroups[Random.Range(0, ColorGroups.Length)];
 
-				// get number of safes to actiate
+				// get number of safes to activate
 				int numberToActivate = 1; // complicated algorithm
 
 				// add new safe to list
