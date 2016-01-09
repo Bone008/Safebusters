@@ -31,16 +31,16 @@ public class ButtonChallenge : AbstractChallenge
         }
 
 
-        // colorize placeholder cubes to show buttons to press
-        // when actual models for the button challenge are in, this should be replaced
+        // colorize view to display which buttons to press
+        UnityEngine.UI.Image[] images = backGameObject.transform.GetComponentsInChildren<UnityEngine.UI.Image>();
 		if ((buttonsToPress & GameButton.Left) != 0)
-            backGameObject.transform.GetChild(0).GetComponent<UnityEngine.UI.Image>().color = Color.green;
+            images[0].color = Color.green;
         if ((buttonsToPress & GameButton.Top) != 0)
-            backGameObject.transform.GetChild(1).GetComponent<UnityEngine.UI.Image>().color = Color.green;
+            images[1].color = Color.green;
         if ((buttonsToPress & GameButton.Bottom) != 0)
-            backGameObject.transform.GetChild(2).GetComponent<UnityEngine.UI.Image>().color = Color.green;
+            images[2].color = Color.green;
         if ((buttonsToPress & GameButton.Right) != 0)
-            backGameObject.transform.GetChild(3).GetComponent<UnityEngine.UI.Image>().color = Color.green;
+            images[3].color = Color.green;
     }
 
     void Update()

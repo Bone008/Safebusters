@@ -1,7 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Safe : MonoBehaviour {
+public class Safe : MonoBehaviour
+{
+
+    public AnimationCurve doorOpeningCurve;
+    public float doorOpeningDuration;
 
     [Header("Children mappings")]
     public Renderer frameRenderer;
@@ -9,10 +13,11 @@ public class Safe : MonoBehaviour {
     public Transform frontAnchor;
     public Transform frontAnchorBottomRight;
     public Transform backAnchor;
+    public GameObject backDecorated;
+    public GameObject backUndecorated;
 
     [HideInInspector]
     public AbstractChallenge challenge;
-    public AnimationCurve doorOpeningSpeed;
 
     private bool backwards = false;
     private float maxTimer;
@@ -47,26 +52,26 @@ public class Safe : MonoBehaviour {
         //doorAnchor.localRotation = Quaternion.Euler(0, -90, 0);
         StartCoroutine(RotateSafeDoorSmoothly());
         // TODO process game logic (activate next safes, etc)
-		SetActive(false);
-		challenge.enabled = false;
+        SetActive(false);
+        challenge.enabled = false;
     }
     public void FailChallenge()
     {
         Debug.Log("lost a life!");
     }
 
-    public void SpawnChallengeObjects(GameObject frontPrefab, GameObject backPrefab, GameObject worldCanvas, float guiSizeModifier)
+    public void SpawnChallengeObjects(GameObject frontPrefab, GameObject backPrefab, bool decoratedBack)
     {
         GameObject front = (GameObject)Instantiate(frontPrefab, Vector3.zero, Quaternion.identity);
         front.transform.SetParent(frontAnchor, false);
         GameObject back = (GameObject)Instantiate(backPrefab, Vector3.zero, Quaternion.identity);
-        back.transform.SetParent(worldCanvas.transform, false);
-        back.transform.localScale *= guiSizeModifier;
-
-        back.GetComponent<RectTransform>().position = backAnchor.position;
+        back.transform.SetParent(backAnchor, false);
 
         challenge.frontGameObject = front;
         challenge.backGameObject = back;
+
+        backDecorated.SetActive(decoratedBack);
+        backUndecorated.SetActive(!decoratedBack);
     }
 
     public void SetBackwards(bool flag)
@@ -115,16 +120,20 @@ public class Safe : MonoBehaviour {
         return frontAnchorBottomRight.localPosition.y - frontAnchor.localPosition.y;
     }
 
-    IEnumerator RotateSafeDoorSmoothly() {
-        print("Called RotateSafeDoorSmoothly, current rotation: "+ doorAnchor.localRotation.eulerAngles.y);
+    IEnumerator RotateSafeDoorSmoothly()
+    {
         float passedTime = 0;
-        while (doorAnchor.localRotation.eulerAngles.y > 270 || doorAnchor.localRotation.eulerAngles.y < 90) //Needed the 90 because for some reason it goes negative for a frame... -.-
+        // animate for [doorOpeningDuration] seconds
+        while (passedTime < doorOpeningDuration)
         {
-            print("rotating, added value is: "+ doorOpeningSpeed.Evaluate(passedTime)+" current rotation is: "+doorAnchor.localRotation.eulerAngles.y);
-            doorAnchor.localRotation = Quaternion.Euler(doorAnchor.localRotation.eulerAngles.x, doorAnchor.localRotation.eulerAngles.y - doorOpeningSpeed.Evaluate(passedTime), doorAnchor.localRotation.eulerAngles.z);
+            // apply curve to [passedTime]
+            doorAnchor.localRotation = Quaternion.Euler(0, -90 * doorOpeningCurve.Evaluate(passedTime / doorOpeningDuration), 0);
             passedTime += Time.deltaTime;
-            yield return 0;
+            yield return null;
         }
+
+        // final step --> fully open
+        doorAnchor.localRotation = Quaternion.Euler(0, -90, 0);
     }
 
 }

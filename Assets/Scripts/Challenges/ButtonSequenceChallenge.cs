@@ -84,28 +84,30 @@ public class ButtonSequenceChallenge : AbstractChallenge
 
     private void UpdateBackView()
     {
+        UnityEngine.UI.Image[] images = backGameObject.transform.GetComponentsInChildren<UnityEngine.UI.Image>();
+
         //TODO: simplify and replace magenta with normal color
         // colorize placeholder cubes to show buttons to press
         // when actual models for the button challenge are in, this should be replaced
         if ((buttonsToPress[nextButtonIndex] & GameButton.Left) != 0)
-            backGameObject.transform.GetChild(0).GetComponent<UnityEngine.UI.Image>().color = Color.green;
+            images[0].color = Color.green;
         else
-            backGameObject.transform.GetChild(0).GetComponent<UnityEngine.UI.Image>().color = Color.magenta;
+            images[0].color = Color.magenta;
 
         if ((buttonsToPress[nextButtonIndex] & GameButton.Top) != 0)
-            backGameObject.transform.GetChild(1).GetComponent<UnityEngine.UI.Image>().color = Color.green;
+            images[1].color = Color.green;
         else
-            backGameObject.transform.GetChild(1).GetComponent<UnityEngine.UI.Image>().color = Color.magenta;
+            images[1].color = Color.magenta;
 
         if ((buttonsToPress[nextButtonIndex] & GameButton.Bottom) != 0)
-            backGameObject.transform.GetChild(2).GetComponent<UnityEngine.UI.Image>().color = Color.green;
+            images[2].color = Color.green;
         else
-            backGameObject.transform.GetChild(2).GetComponent<UnityEngine.UI.Image>().color = Color.magenta;
+            images[2].color = Color.magenta;
 
         if ((buttonsToPress[nextButtonIndex] & GameButton.Right) != 0)
-            backGameObject.transform.GetChild(3).GetComponent<UnityEngine.UI.Image>().color = Color.green;
+            images[3].color = Color.green;
         else
-            backGameObject.transform.GetChild(3).GetComponent<UnityEngine.UI.Image>().color = Color.magenta;
+            images[3].color = Color.magenta;
 
     }
 }

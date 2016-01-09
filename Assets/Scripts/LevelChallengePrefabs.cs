@@ -8,18 +8,21 @@ using System.Reflection;
 [Serializable]
 public class LevelChallengePrefabs
 {
-    // variable name is important!
+    // variable names are important!
     // naming convention:
     //   {name of challenge script class}Front
     //   {name of challenge script class}Back
+    //   {name of challenge script class}DecoratedBack
 
     [Header("Button Challenge")]
     public GameObject ButtonChallengeFront;
     public GameObject ButtonChallengeBack;
+    public bool ButtonChallengeDecoratedBack;
 
 	[Header("Button Sequence Challenge")]
 	public GameObject ButtonSequenceChallengeFront;
-	public GameObject ButtonSequenceChallengeBack;
+    public GameObject ButtonSequenceChallengeBack;
+    public bool ButtonSequenceChallengeDecoratedBack;
 
     public GameObject GetFrontPrefab(Type challengeType)
     {
@@ -31,5 +34,11 @@ public class LevelChallengePrefabs
     {
         FieldInfo field = typeof(LevelChallengePrefabs).GetField(challengeType.Name + "Back");
         return (GameObject)field.GetValue(this);
+    }
+
+    public bool HasDecoratedBack(Type challengeType)
+    {
+        FieldInfo field = typeof(LevelChallengePrefabs).GetField(challengeType.Name + "DecoratedBack");
+        return (bool)field.GetValue(this);
     }
 }

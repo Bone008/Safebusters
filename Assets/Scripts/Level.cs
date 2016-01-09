@@ -12,9 +12,6 @@ public class Level : MonoBehaviour
     public GameObject safePrefab;
     public LevelGenerationOptions generationOptions = new LevelGenerationOptions();
     public LevelChallengePrefabs challengePrefabs = new LevelChallengePrefabs();
-    public AnimationCurve doorOpeningSpeed;
-    public GameObject worldCanvas;
-    public float GUISizeModifier;
 
     [HideInInspector]
     public List<Safe> safes;
@@ -50,21 +47,21 @@ public class Level : MonoBehaviour
             offset = new Vector3(safeWidth * (i % generationOptions.safesPerRow), -safeHeight * (int)(i / generationOptions.safesPerRow), 0);
             go.transform.localPosition = baseOffset + offset;
 
-			// chose challenge
+			// choose challenge
             Type challengeType = generationOptions.availableChallenges[UnityEngine.Random.Range(0, generationOptions.availableChallenges.Length)];
             AbstractChallenge challenge = (AbstractChallenge)go.AddComponent(challengeType);
 
-			// instantiate challenge-prefabs
+			// find challenge-prefabs
             GameObject frontPrefab = challengePrefabs.GetFrontPrefab(challengeType);
             GameObject backPrefab = challengePrefabs.GetBackPrefab(challengeType);
+            bool decoratedBack = challengePrefabs.HasDecoratedBack(challengeType);
 
-			// create Safe logic
+			// initialize safe logic
 			Safe safe = go.GetComponent<Safe>();
 			safe.challenge = challenge;   
             safe.SetBackwards(i % 2 == 1);
             safe.SetMaxTimer(UnityEngine.Random.Range(30, 61));
-            safe.doorOpeningSpeed = doorOpeningSpeed;
-            safe.SpawnChallengeObjects(frontPrefab, backPrefab, worldCanvas, GUISizeModifier);
+            safe.SpawnChallengeObjects(frontPrefab, backPrefab, decoratedBack);
             safe.SetActive(true);
 
             // get random colorgroup (should be improved at some point)
