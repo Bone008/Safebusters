@@ -16,16 +16,16 @@ public class ButtonChallenge : AbstractChallenge
     protected override void InitChallenge()
     {
 		// GameButtons as list
-        List<GameButton> values = Enum.GetValues(typeof(GameButton)).Cast<GameButton>().ToList();
+        List<GameButton> values = new List<GameButton> { GameButton.Left, GameButton.Top, GameButton.Right, GameButton.Bottom };
 
 		// random amount of buttons to press to solve the challenge
-		int numButtonsToPress = UnityEngine.Random.Range(1, values.Count);
+		int numButtonsToPress = UnityEngine.Random.Range(1, values.Count + 1);
 
         // pick [numButtonsToPress] random GameButtons as buttonsToPress
         buttonsToPress = GameButton.None;
         for (int i = 0; i < numButtonsToPress; i++)
         {
-            int randomIndex = UnityEngine.Random.Range(1, values.Count);
+            int randomIndex = UnityEngine.Random.Range(0, values.Count);
             buttonsToPress |= values[randomIndex];
             values.RemoveAt(randomIndex);
         }
