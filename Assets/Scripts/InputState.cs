@@ -18,6 +18,16 @@ public class InputState
         analogInputs[(int)type] = value;
     }
 
+	public int getButtonHeldCount(){
+		int count = 0;
+		int value = (int) HeldButtons;
+		while (value != 0) {
+			value = value & (value - 1); //internet magic
+			count++;
+		}
+		return count;
+	}
+
 }
 
 [Flags]

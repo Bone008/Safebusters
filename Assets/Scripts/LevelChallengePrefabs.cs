@@ -17,6 +17,10 @@ public class LevelChallengePrefabs
     public GameObject ButtonChallengeFront;
     public GameObject ButtonChallengeBack;
 
+	[Header("Button Sequence Challenge")]
+	public GameObject ButtonSequenceChallengeFront;
+	public GameObject ButtonSequenceChallengeBack;
+
     public GameObject GetFrontPrefab(Type challengeType)
     {
         FieldInfo field = typeof(LevelChallengePrefabs).GetField(challengeType.Name + "Front");

@@ -11,7 +11,10 @@ public class LevelGenerationOptions
     public int safesPerRow = 3;
 
     public Color[] colorGroups;
-    public Type[] availableChallenges = { typeof(ButtonChallenge) };
+    public Type[] availableChallenges = { 
+		typeof(ButtonChallenge),
+		typeof(ButtonSequenceChallenge)
+	};
 
     // will be extended with additional parameters and logic later
 }

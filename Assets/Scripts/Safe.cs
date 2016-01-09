@@ -45,6 +45,8 @@ public class Safe : MonoBehaviour {
         doorAnchor.localRotation = Quaternion.Euler(0, -90, 0);
 
         // TODO process game logic (activate next safes, etc)
+		SetActive(false);
+		challenge.enabled = false;
     }
     public void FailChallenge()
     {

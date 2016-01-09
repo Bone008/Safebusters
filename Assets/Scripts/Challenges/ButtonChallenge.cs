@@ -19,13 +19,13 @@ public class ButtonChallenge : AbstractChallenge
         List<GameButton> values = Enum.GetValues(typeof(GameButton)).Cast<GameButton>().ToList();
 
 		// random amount of buttons to press to solve the challenge
-		int numButtonsToPress = UnityEngine.Random.Range(1, values.Count + 1);
+		int numButtonsToPress = UnityEngine.Random.Range(1, values.Count);
 
         // pick [numButtonsToPress] random GameButtons as buttonsToPress
         buttonsToPress = GameButton.None;
         for (int i = 0; i < numButtonsToPress; i++)
         {
-            int randomIndex = UnityEngine.Random.Range(0, values.Count);
+            int randomIndex = UnityEngine.Random.Range(1, values.Count);
             buttonsToPress |= values[randomIndex];
             values.RemoveAt(randomIndex);
         }
