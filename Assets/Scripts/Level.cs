@@ -12,6 +12,7 @@ public class Level : MonoBehaviour
     public GameObject safePrefab;
     public LevelGenerationOptions generationOptions = new LevelGenerationOptions();
     public LevelChallengePrefabs challengePrefabs = new LevelChallengePrefabs();
+    public AnimationCurve doorOpeningSpeed;
 
     [HideInInspector]
     public List<Safe> safes;
@@ -61,6 +62,7 @@ public class Level : MonoBehaviour
             safe.SpawnChallengeObjects(frontPrefab, backPrefab);     
             safe.SetBackwards(i % 2 == 1);
             safe.SetMaxTimer(UnityEngine.Random.Range(30, 61));
+            safe.doorOpeningSpeed = doorOpeningSpeed;
             safe.SetActive(true);
 
             // get random colorgroup (should be improved at some point)

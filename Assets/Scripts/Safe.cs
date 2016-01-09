@@ -12,6 +12,7 @@ public class Safe : MonoBehaviour {
 
     [HideInInspector]
     public AbstractChallenge challenge;
+    public AnimationCurve doorOpeningSpeed;
 
     private bool backwards = false;
     private float maxTimer;
@@ -43,8 +44,8 @@ public class Safe : MonoBehaviour {
     {
         Debug.Log("challenge solved!");
         // open door
-        doorAnchor.localRotation = Quaternion.Euler(0, -90, 0);
-
+        //doorAnchor.localRotation = Quaternion.Euler(0, -90, 0);
+        StartCoroutine(RotateSafeDoorSmoothly());
         // TODO process game logic (activate next safes, etc)
 		SetActive(false);
 		challenge.enabled = false;
@@ -109,6 +110,18 @@ public class Safe : MonoBehaviour {
     public float GetUsableFrontHeight()
     {
         return frontAnchorBottomRight.localPosition.y - frontAnchor.localPosition.y;
+    }
+
+    IEnumerator RotateSafeDoorSmoothly() {
+        print("Called RotateSafeDoorSmoothly, current rotation: "+ doorAnchor.localRotation.eulerAngles.y);
+        float passedTime = 0;
+        while (doorAnchor.localRotation.eulerAngles.y > 270 || doorAnchor.localRotation.eulerAngles.y < 90) //Needed the 90 because for some reason it goes negative for a frame... -.-
+        {
+            print("rotating, added value is: "+ doorOpeningSpeed.Evaluate(passedTime)+" current rotation is: "+doorAnchor.localRotation.eulerAngles.y);
+            doorAnchor.localRotation = Quaternion.Euler(doorAnchor.localRotation.eulerAngles.x, doorAnchor.localRotation.eulerAngles.y - doorOpeningSpeed.Evaluate(passedTime), doorAnchor.localRotation.eulerAngles.z);
+            passedTime += Time.deltaTime;
+            yield return 0;
+        }
     }
 
 }
