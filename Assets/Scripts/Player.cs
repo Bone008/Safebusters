@@ -25,10 +25,14 @@ public class Player : MonoBehaviour
     [HideInInspector]
     public int focusedSafe = 0;
 
+    private Quaternion cameraInitialRotation;
+
     private InputIF input;
 
     void Start()
     {
+        cameraInitialRotation = transform.rotation;
+
         if (useCactus)
         {
             this.gameObject.AddComponent<CactusController>();
@@ -74,11 +78,11 @@ public class Player : MonoBehaviour
         {
             // move behind the safe
             targetPosition -= 2 * cameraOffset;
-            transform.rotation = Quaternion.Euler(0, 180, 0);
+            transform.rotation = Quaternion.Euler(0, 180, 0) * cameraInitialRotation;
         }
         else
         {
-            transform.rotation = Quaternion.identity;
+            transform.rotation = cameraInitialRotation;
         }
         transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * cameraSpeed);
 

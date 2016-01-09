@@ -7,6 +7,7 @@ public class Safe : MonoBehaviour {
     public Renderer frameRenderer;
     public Transform doorAnchor;
     public Transform frontAnchor;
+    public Transform frontAnchorBottomRight;
     public Transform backAnchor;
 
     [HideInInspector]
@@ -96,6 +97,18 @@ public class Safe : MonoBehaviour {
     public Bounds GetFrameBounds()
     {
         return frameRenderer.bounds;
+    }
+
+    /// <summary>Returns the width of the area on the safe usable by challenges on the front side. Note that this returns a negative value.</summary>
+    public float GetUsableFrontWidth()
+    {
+        return frontAnchorBottomRight.localPosition.x - frontAnchor.localPosition.x;
+    }
+
+    /// <summary>Returns the height of the area on the safe usable by challenges on the front side. Note that this returns a negative value.</summary>
+    public float GetUsableFrontHeight()
+    {
+        return frontAnchorBottomRight.localPosition.y - frontAnchor.localPosition.y;
     }
 
 }

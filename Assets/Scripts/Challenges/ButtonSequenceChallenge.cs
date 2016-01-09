@@ -6,96 +6,103 @@ using System.Linq;
 
 public class ButtonSequenceChallenge : AbstractChallenge
 {
-	// time that you need to hold down the buttons to confirm your input
-	private const float PRESS_TIME_TO_CONFIRM = 2;
-	private const int LONGEST_SEQUENCE_TO_PRESS = 6;
-	private List<GameButton> buttonsToPress;
-	private GameButton lastHeld = GameButton.None;
-	private float heldTime = 0;
+    private const int LONGEST_SEQUENCE_TO_PRESS = 5;
 
-	protected override void InitChallenge()
-	{
-		// GameButtons as list
-		List<GameButton> values = Enum.GetValues(typeof(GameButton)).Cast<GameButton>().ToList();
+    private List<GameButton> buttonsToPress;
 
-		// random amount of buttons (minimum 2) to press to solve the challenge
-		int numButtonsToPress = UnityEngine.Random.Range(2, LONGEST_SEQUENCE_TO_PRESS + 1);
+    private int nextButtonIndex = 0;
+    private List<LampController> lamps;
 
-		// pick [numButtonsToPress] random GameButtons as buttonsToPress
-		buttonsToPress = new List<GameButton> ();
-		for (int i = 0; i < numButtonsToPress; i++)
-		{
-			int randomIndex = UnityEngine.Random.Range(1, values.Count);
-			buttonsToPress.Add(values[randomIndex]);
-		}
+    protected override void InitChallenge()
+    {
+        // GameButtons as list
+        List<GameButton> values = Enum.GetValues(typeof(GameButton)).Cast<GameButton>().ToList();
 
-		updateView ();
-	}
+        // random amount of buttons (minimum 2) to press to solve the challenge
+        int numButtonsToPress = UnityEngine.Random.Range(2, LONGEST_SEQUENCE_TO_PRESS + 1);
 
-	void Update()
-	{
-		// TODO: remove?
-		if (!hasFocusFront)
-			return;
+        // pick [numButtonsToPress] random GameButtons as buttonsToPress
+        buttonsToPress = new List<GameButton>();
+        for (int i = 0; i < numButtonsToPress; i++)
+        {
+            int randomIndex = UnityEngine.Random.Range(1, values.Count);
+            buttonsToPress.Add(values[randomIndex]);
+        }
 
-		if (buttonsToPress.Count == 0)
-			return;
+        lamps = new List<LampController>(LONGEST_SEQUENCE_TO_PRESS);
+        frontGameObject.GetComponentsInChildren<LampController>(lamps);
 
-		// buttons changed --> reset timer
-		if (frontInputState.HeldButtons != lastHeld)
-		{
-			lastHeld = frontInputState.HeldButtons;
-			heldTime = 0;
-		}
+        for (int i = buttonsToPress.Count; i < lamps.Count; i++)
+            lamps[i].gameObject.SetActive(false);
 
-		if (lastHeld != GameButton.None)
-		{
-			// player is holding down buttons --> increase timer
-			heldTime += Time.deltaTime;
+        UpdateBackView();
+    }
 
-			// timer reached threshold --> evaluate
-			if (heldTime >= PRESS_TIME_TO_CONFIRM)
-			{
-				heldTime = 0;
-				// correct buttons held and only 1 button held --> correct button
-				if (lastHeld == buttonsToPress[0] && frontInputState.getButtonHeldCount () == 1) {
-					// remove this button from list
-					buttonsToPress.RemoveAt (0);
+    void Update()
+    {
+        if (!hasFocusFront)
+            return;
 
-					// no buttons left -> challenge solved, else: update view
-					if (buttonsToPress.Count == 0) {
-						safe.SolveChallenge ();
-					} else {
-						updateView ();
-					}
-				} else {
-					safe.FailChallenge ();
-				}
-			}
-		}
+        GameButton pressed = frontInputState.PressedButtons;
+        if (pressed == buttonsToPress[nextButtonIndex])
+        {
+            if (IsInvoking("ResetLamps"))
+            {
+                CancelInvoke("ResetLamps");
+                ResetLamps();
+            }
 
-	}
+            lamps[nextButtonIndex].SetLightColor(Color.green);
+            lamps[nextButtonIndex].SetTurnedOn(true);
+            nextButtonIndex++;
 
-	void updateView(){
-		//TODO: simplify and replace magenta with normal color
-		// colorize placeholder cubes to show buttons to press
-		// when actual models for the button challenge are in, this should be replaced
-		if ((buttonsToPress[0] & GameButton.Left) != 0)
-			backGameObject.transform.GetChild(0).GetComponent<Renderer>().material.color = Color.green;
-		else
-			backGameObject.transform.GetChild(0).GetComponent<Renderer>().material.color = Color.magenta;
-		if ((buttonsToPress[0] & GameButton.Top) != 0)
-			backGameObject.transform.GetChild(1).GetComponent<Renderer>().material.color = Color.green;
-		else
-			backGameObject.transform.GetChild(1).GetComponent<Renderer>().material.color = Color.magenta;
-		if ((buttonsToPress[0] & GameButton.Bottom) != 0)
-			backGameObject.transform.GetChild(2).GetComponent<Renderer>().material.color = Color.green;
-		else
-			backGameObject.transform.GetChild(2).GetComponent<Renderer>().material.color = Color.magenta;
-		if ((buttonsToPress[0] & GameButton.Right) != 0)
-			backGameObject.transform.GetChild(3).GetComponent<Renderer>().material.color = Color.green;
-		else
-			backGameObject.transform.GetChild(3).GetComponent<Renderer>().material.color = Color.magenta;
-		
-	}
+            // no buttons left -> challenge solved, else: update view
+            if (nextButtonIndex == buttonsToPress.Count)
+                safe.SolveChallenge();
+            else
+                UpdateBackView();
+        }
+        else if (pressed != GameButton.None)
+        {
+            safe.FailChallenge();
+
+            // reset to beginning
+            for (int i = 0; i < nextButtonIndex; i++)
+                lamps[i].SetLightColor(Color.red);
+            Invoke("ResetLamps", 0.5f);
+
+            nextButtonIndex = 0;
+            UpdateBackView();
+        }
+    }
+
+    private void ResetLamps()
+    {
+        for (int i = 0; i < lamps.Count; i++)
+            lamps[i].SetTurnedOn(false);
+    }
+
+    private void UpdateBackView()
+    {
+        //TODO: simplify and replace magenta with normal color
+        // colorize placeholder cubes to show buttons to press
+        // when actual models for the button challenge are in, this should be replaced
+        if ((buttonsToPress[nextButtonIndex] & GameButton.Left) != 0)
+            backGameObject.transform.GetChild(0).GetComponent<Renderer>().material.color = Color.green;
+        else
+            backGameObject.transform.GetChild(0).GetComponent<Renderer>().material.color = Color.magenta;
+        if ((buttonsToPress[nextButtonIndex] & GameButton.Top) != 0)
+            backGameObject.transform.GetChild(1).GetComponent<Renderer>().material.color = Color.green;
+        else
+            backGameObject.transform.GetChild(1).GetComponent<Renderer>().material.color = Color.magenta;
+        if ((buttonsToPress[nextButtonIndex] & GameButton.Bottom) != 0)
+            backGameObject.transform.GetChild(2).GetComponent<Renderer>().material.color = Color.green;
+        else
+            backGameObject.transform.GetChild(2).GetComponent<Renderer>().material.color = Color.magenta;
+        if ((buttonsToPress[nextButtonIndex] & GameButton.Right) != 0)
+            backGameObject.transform.GetChild(3).GetComponent<Renderer>().material.color = Color.green;
+        else
+            backGameObject.transform.GetChild(3).GetComponent<Renderer>().material.color = Color.magenta;
+
+    }
 }
