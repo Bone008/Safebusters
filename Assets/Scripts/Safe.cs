@@ -55,12 +55,15 @@ public class Safe : MonoBehaviour {
         Debug.Log("lost a life!");
     }
 
-    public void SpawnChallengeObjects(GameObject frontPrefab, GameObject backPrefab)
+    public void SpawnChallengeObjects(GameObject frontPrefab, GameObject backPrefab, GameObject worldCanvas, float guiSizeModifier)
     {
         GameObject front = (GameObject)Instantiate(frontPrefab, Vector3.zero, Quaternion.identity);
         front.transform.SetParent(frontAnchor, false);
         GameObject back = (GameObject)Instantiate(backPrefab, Vector3.zero, Quaternion.identity);
-        back.transform.SetParent(backAnchor, false);
+        back.transform.SetParent(worldCanvas.transform, false);
+        back.transform.localScale *= guiSizeModifier;
+
+        back.GetComponent<RectTransform>().position = backAnchor.position;
 
         challenge.frontGameObject = front;
         challenge.backGameObject = back;
