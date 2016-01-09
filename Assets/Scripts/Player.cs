@@ -59,11 +59,11 @@ public class Player : MonoBehaviour
         // far left/right key pressed -> focus next active safe
         do
         {
-            if (input.FarRightPressed())
+            if (input.FarRightPressed)
             {
                 focusedSafe = (focusedSafe + 1) % safeCount;
             }
-            if (input.FarLeftPressed())
+            if (input.FarLeftPressed)
             {
                 focusedSafe = (focusedSafe + safeCount - 1) % safeCount;
             }
@@ -88,7 +88,7 @@ public class Player : MonoBehaviour
 
 
         // send input to safe
-        level.safes[focusedSafe].SetInputState(isPlayer2, input.getInput());
+        level.safes[focusedSafe].SetInputState(isPlayer2, input.GameInputState);
     }
 
 }

@@ -23,6 +23,12 @@ public class CactusController : MonoBehaviour, InputIF {
 	private bool farLeftLastPressed = false;
 	private bool farRightLastPressed = false;
 
+
+    public InputState GameInputState { get { return inputState; } }
+    public bool FarLeftPressed { get { return farLeftPressed; } }
+    public bool FarRightPressed { get { return farRightPressed; } }
+
+
 	void Start(){
 		stream.Open();
 	}
@@ -31,17 +37,6 @@ public class CactusController : MonoBehaviour, InputIF {
 		inputState = collectInput ();
 	}
 
-	public InputState  getInput (){
-		return inputState;
-	}
-
-	public bool FarLeftPressed(){
-		return farLeftPressed;
-	}
-
-	public bool FarRightPressed(){
-		return farRightPressed;
-	}
 
 	private InputState collectInput(){
 		InputState inputState = new InputState ();
@@ -95,4 +90,5 @@ public class CactusController : MonoBehaviour, InputIF {
 		
 		return lastPressed;
 	}
+
 }
