@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Safe : MonoBehaviour
 {
@@ -15,6 +16,10 @@ public class Safe : MonoBehaviour
     public Transform backAnchor;
     public GameObject backDecorated;
     public GameObject backUndecorated;
+    [Header("Timer controls")]
+    public Text timerDigit1;
+    public Text timerDigit2;
+    public Text timerDot;
 
     [HideInInspector]
     public AbstractChallenge challenge;
@@ -34,6 +39,17 @@ public class Safe : MonoBehaviour
 
     void Update()
     {
+        if(active)
+        {
+            // count down timer
+            remainingTime -= Time.deltaTime;
+            
+            if (remainingTime < 0)
+                // TODO lose game; for now just reset to max value (easier testing when you're not constantly losing ...)
+                remainingTime = maxTimer;
+
+            UpdateTimerText();
+        }
     }
 
 
@@ -100,7 +116,25 @@ public class Safe : MonoBehaviour
     {
         maxTimer = time;
         remainingTime = time;
-        // TODO set visual timer value
+        UpdateTimerText();
+    }
+
+    private void UpdateTimerText()
+    {
+        if (remainingTime >= 10)
+        {
+            // show whole seconds as a two digit number
+            timerDigit1.text = "" + Mathf.FloorToInt(remainingTime / 10);
+            timerDigit2.text = "" + Mathf.FloorToInt(remainingTime % 10);
+            timerDot.enabled = false;
+        }
+        else
+        {
+            // show seconds and tenths of a second
+            timerDigit1.text = "" + Mathf.FloorToInt(remainingTime);
+            timerDigit2.text = "" + Mathf.FloorToInt(remainingTime * 10 % 10);
+            timerDot.enabled = true;
+        }
     }
 
     public Bounds GetFrameBounds()
