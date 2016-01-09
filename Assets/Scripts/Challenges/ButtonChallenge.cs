@@ -31,16 +31,8 @@ public class ButtonChallenge : AbstractChallenge
         }
 
 
-        // colorize view to display which buttons to press
-        UnityEngine.UI.Image[] images = backGameObject.transform.GetComponentsInChildren<UnityEngine.UI.Image>();
-		if ((buttonsToPress & GameButton.Left) != 0)
-            images[0].color = Color.green;
-        if ((buttonsToPress & GameButton.Top) != 0)
-            images[1].color = Color.green;
-        if ((buttonsToPress & GameButton.Bottom) != 0)
-            images[2].color = Color.green;
-        if ((buttonsToPress & GameButton.Right) != 0)
-            images[3].color = Color.green;
+        // display which buttons to press on the back
+        backGameObject.GetComponentInChildren<FourButtonsController>().SetHighlightedButtons(buttonsToPress);
     }
 
     void Update()
