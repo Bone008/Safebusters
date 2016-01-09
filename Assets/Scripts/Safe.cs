@@ -33,9 +33,9 @@ public class Safe : MonoBehaviour {
     public void SetInputState(bool isPlayer2, InputState state)
     {
         if (isPlayer2 == backwards)
-            challenge.SetBackInput(state);
-        else
             challenge.SetFrontInput(state);
+        else
+            challenge.SetBackInput(state);
     }
 
     public void SolveChallenge()
@@ -67,7 +67,8 @@ public class Safe : MonoBehaviour {
     public void SetBackwards(bool flag)
     {
         backwards = flag;
-        transform.localRotation = (backwards ? Quaternion.Euler(0, 180, 0) : Quaternion.identity);
+        // note that the model is facing backwards by default, so it actually has to be rotated when NOT backwards
+        transform.localRotation = (backwards ? Quaternion.identity : Quaternion.Euler(0, 180, 0));
     }
 
     public void SetDisplayColor(Color color)
