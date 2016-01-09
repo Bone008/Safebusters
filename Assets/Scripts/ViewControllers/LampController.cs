@@ -17,12 +17,20 @@ public class LampController : MonoBehaviour {
     
     public void SetLightColor(Color color)
     {
+        // performance optimization
+        if (lightColor == color)
+            return;
+
         lightColor = color;
         UpdateView();
     }
 
     public void SetTurnedOn(bool flag)
     {
+        // performance optimization
+        if (turnedOn == flag)
+            return;
+
         turnedOn = flag;
         UpdateView();
     }
