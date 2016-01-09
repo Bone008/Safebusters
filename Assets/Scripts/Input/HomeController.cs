@@ -30,16 +30,16 @@ public class HomeController : MonoBehaviour, InputIF
 		leftSliderValue = GUI.VerticalSlider (new Rect (20, 25, 15, 100), leftSliderValue, 1.0f, 0.0f);
 		rightSliderValue = GUI.VerticalSlider (new Rect (65, 25, 15, 100), rightSliderValue, 1.0f, 0.0f);
 
-		leftKnobValue = GUI.HorizontalSlider (new Rect (5, 5, 40, 15), leftKnobValue, 0.0f, 1.0f);
-		rightKnobValue = GUI.HorizontalSlider (new Rect (50, 5, 40, 15), rightKnobValue, 0.0f, 1.0f);
+		leftKnobValue = GUI.HorizontalSlider (new Rect (5, 5, 40, 15), leftKnobValue, -1.0f, 1.0f);
+		rightKnobValue = GUI.HorizontalSlider (new Rect (50, 5, 40, 15), rightKnobValue, -1.0f, 1.0f);
 
 		// top-right corner: microphone
 		microphoneValue = GUI.VerticalSlider (new Rect (Screen.width - 20, 5, 15, 100), microphoneValue, 1.0f, 0.0f);
 
 		// bottom-left corner: accelerometer
-		accelerometerValue.x = GUI.VerticalSlider (new Rect (5, Screen.height - 105, 15, 100), accelerometerValue.x, 1.0f, 0.0f);
-		accelerometerValue.y = GUI.VerticalSlider (new Rect (25, Screen.height - 105, 15, 100), accelerometerValue.y, 1.0f, 0.0f);
-		accelerometerValue.z = GUI.VerticalSlider (new Rect (45, Screen.height - 105, 15, 100), accelerometerValue.z, 1.0f, 0.0f);
+		accelerometerValue.x = GUI.VerticalSlider (new Rect (5, Screen.height - 105, 15, 100), accelerometerValue.x, 1.0f, -1.0f);
+		accelerometerValue.y = GUI.VerticalSlider (new Rect (25, Screen.height - 105, 15, 100), accelerometerValue.y, 1.0f, -1.0f);
+		accelerometerValue.z = GUI.VerticalSlider (new Rect (45, Screen.height - 105, 15, 100), accelerometerValue.z, 1.0f, -1.0f);
 	}
 
     private InputState collectInput()
