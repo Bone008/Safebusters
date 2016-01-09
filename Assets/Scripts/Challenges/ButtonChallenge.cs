@@ -10,19 +10,20 @@ public class ButtonChallenge : AbstractChallenge
     private const float PRESS_TIME_TO_CONFIRM = 2;
 
     private GameButton buttonsToPress;
-
     private GameButton lastHeld = GameButton.None;
     private float heldTime = 0;
 
     protected override void InitChallenge()
     {
+		// GameButtons as list
         List<GameButton> values = Enum.GetValues(typeof(GameButton)).Cast<GameButton>().ToList();
 
-        int numButtons = UnityEngine.Random.Range(1, values.Count + 1);
+		// random amount of buttons to press to solve the challenge
+		int numButtonsToPress = UnityEngine.Random.Range(1, values.Count + 1);
 
-        // pick [numButtons] random GameButtons as buttonsToPress
+        // pick [numButtonsToPress] random GameButtons as buttonsToPress
         buttonsToPress = GameButton.None;
-        for (int i = 0; i < numButtons; i++)
+        for (int i = 0; i < numButtonsToPress; i++)
         {
             int randomIndex = UnityEngine.Random.Range(0, values.Count);
             buttonsToPress |= values[randomIndex];
@@ -32,7 +33,7 @@ public class ButtonChallenge : AbstractChallenge
 
         // colorize placeholder cubes to show buttons to press
         // when actual models for the button challenge are in, this should be replaced
-        if ((buttonsToPress & GameButton.Left) != 0)
+		if ((buttonsToPress & GameButton.Left) != 0)
             backGameObject.transform.GetChild(0).GetComponent<Renderer>().material.color = Color.green;
         if ((buttonsToPress & GameButton.Top) != 0)
             backGameObject.transform.GetChild(1).GetComponent<Renderer>().material.color = Color.green;
@@ -44,6 +45,7 @@ public class ButtonChallenge : AbstractChallenge
 
     void Update()
     {
+		// TODO: remove?
         if (!hasFocusFront)
             return;
 

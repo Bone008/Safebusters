@@ -3,12 +3,11 @@ using UnityEngine;
 
 public class InputState
 {
-
-    private float[] analogInputs = new float[5];
-
-    public GameButton HeldButtons { get; set; }
+	public GameButton HeldButtons { get; set; }
     public GameButton PressedButtons { get; set; }
     public Vector3 Acceleration { get; set; }
+
+	private float[] analogInputs = new float[5];
 
     public float GetAnalogInput(GameAnalogInput type)
     {
@@ -34,8 +33,8 @@ public enum GameButton
 public enum GameAnalogInput
 {
     LeftKnob = 0,
-    RightKnob,
-    LeftSlider,
-    RightSlider,
-    Microphone
+    RightKnob = 1,
+    LeftSlider = 2,
+    RightSlider = 3,
+    Microphone = 4
 }

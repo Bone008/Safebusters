@@ -11,16 +11,18 @@ public class Player : MonoBehaviour
     public Level level;
     public CustomButtonReader input;
 
-    // index of the safe in focus
-    public int focusedSafe = 0;
-
     // offset of the camera to the focused safe
     public Vector3 cameraOffset;
+
     // speed, at which the camera changes to a new safes
     public float cameraSpeed;
 
     // false = player 1, true = player 2
     public bool isPlayer2 = false;
+
+	// index of the safe in focus
+	[HideInInspector]
+	public int focusedSafe = 0;
 
     void Start()
     {
@@ -53,7 +55,6 @@ public class Player : MonoBehaviour
 
         // smoothly move cam to focussed safe
         transform.position = Vector3.Lerp(transform.position, level.safes[focusedSafe].transform.position + cameraOffset, Time.deltaTime * cameraSpeed);
-
 
         // send input to safe
         level.safes[focusedSafe].SetInputState(isPlayer2, input.inputState);

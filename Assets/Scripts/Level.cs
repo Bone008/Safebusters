@@ -23,18 +23,22 @@ public class Level : MonoBehaviour
 
     private void GenerateLevel()
     {
+		// get safe-bounds
         Bounds bounds = safePrefab.GetComponent<Safe>().GetFrameBounds();
         float safeWidth = bounds.size.x;
         float safeHeight = bounds.size.y;
 
+		// calculate base offset
         int rows = Mathf.CeilToInt(generationOptions.safesToGenerate / (float)generationOptions.safesPerRow);
         Vector3 baseOffset = new Vector3((-generationOptions.safesPerRow + 1) * safeWidth / 2, rows * safeHeight - safeHeight / 2, 0);
-
-        safes = new List<Safe>();
-        Vector3 offset;
+		Vector3 offset;
+        
+		// create safe gameobjects and logic
+		safes = new List<Safe>();
 
         for (int i = 0; i < generationOptions.safesToGenerate; i++)
         {
+			// create GameObject
             var go = Instantiate(safePrefab, Vector3.zero, Quaternion.identity) as GameObject;
             go.transform.SetParent(transform);
             go.name = "Safe " + i;
@@ -43,27 +47,27 @@ public class Level : MonoBehaviour
             offset = new Vector3(safeWidth * (i % generationOptions.safesPerRow), -safeHeight * (int)(i / generationOptions.safesPerRow), 0);
             go.transform.localPosition = baseOffset + offset;
 
-            Safe safe = go.GetComponent<Safe>();
-
+			// chose challenge
             Type challengeType = generationOptions.availableChallenges[UnityEngine.Random.Range(0, generationOptions.availableChallenges.Length)];
-            
             AbstractChallenge challenge = (AbstractChallenge)go.AddComponent(challengeType);
 
+			// instantiate challenge-prefabs
             GameObject frontPrefab = challengePrefabs.GetFrontPrefab(challengeType);
             GameObject backPrefab = challengePrefabs.GetBackPrefab(challengeType);
 
-            safe.challenge = challenge;
-            safe.SpawnChallengeObjects(frontPrefab, backPrefab);
-            
-
+			// create Safe logic
+			Safe safe = go.GetComponent<Safe>();
+			safe.challenge = challenge;
+            safe.SpawnChallengeObjects(frontPrefab, backPrefab);     
             safe.SetBackwards(i % 2 == 1);
             safe.SetMaxTimer(UnityEngine.Random.Range(30, 61));
-            safe.SetActive(i < 4);
+            safe.SetActive(true);
 
             // get random colorgroup (should be improved at some point)
             Color color = generationOptions.colorGroups[UnityEngine.Random.Range(0, generationOptions.colorGroups.Length)];
             safe.SetDisplayColor(color);
 
+			// set 1 safe to activate after solved challenge (should be improved at some point)
             safe.SetNumberOfSafesToActivate(1);
 
             safes.Add(safe);
