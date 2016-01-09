@@ -9,7 +9,6 @@ public class Player : MonoBehaviour
 {
 
     public Level level;
-    public CustomButtonReader input;
 
     // offset of the camera to the focused safe
     public Vector3 cameraOffset;
@@ -20,13 +19,23 @@ public class Player : MonoBehaviour
     // false = player 1, true = player 2
     public bool isPlayer2 = false;
 
+	public bool useCactus = false;
+
 	// index of the safe in focus
 	[HideInInspector]
 	public int focusedSafe = 0;
 
+	private InputIF input;
+
     void Start()
     {
-
+		if (useCactus) {
+			this.gameObject.AddComponent<CactusController> ();
+			input = this.gameObject.GetComponent<CactusController> ();
+		} else {
+			this.gameObject.AddComponent<HomeController> ();
+			input = this.gameObject.GetComponent<HomeController> ();
+		}
     }
 
     void Update()
@@ -43,11 +52,11 @@ public class Player : MonoBehaviour
         // far left/right key pressed -> focus next active safe
         do
         {
-            if (input.FarRightPressed)
+			if (input.FarRightPressed ())
             {
                 focusedSafe = (focusedSafe + 1) % safeCount;
             }
-            if (input.FarLeftPressed)
+			if (input.FarLeftPressed ())
             {
                 focusedSafe = (focusedSafe + safeCount - 1) % safeCount;
             }
@@ -57,7 +66,7 @@ public class Player : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, level.safes[focusedSafe].transform.position + cameraOffset, Time.deltaTime * cameraSpeed);
 
         // send input to safe
-        level.safes[focusedSafe].SetInputState(isPlayer2, input.inputState);
+		level.safes[focusedSafe].SetInputState(isPlayer2, input.getInput());
     }
 
 }

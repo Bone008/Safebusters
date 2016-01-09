@@ -28,6 +28,16 @@ public class InputState
 		return count;
 	}
 
+	public InputState(){
+		// set everything to no input
+		HeldButtons = GameButton.None;
+		PressedButtons = GameButton.None;
+		Acceleration = Vector3.zero;
+		for (int i = 0; i < analogInputs.Length; i++) {
+			analogInputs [i] = 0.0f;
+		}
+	}
+
 }
 
 [Flags]
