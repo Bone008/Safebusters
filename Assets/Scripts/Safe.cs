@@ -111,13 +111,18 @@ public class Safe : MonoBehaviour
 
     public void SpawnChallengeObjects(GameObject frontPrefab, GameObject backPrefab, bool decoratedBack)
     {
-        GameObject front = (GameObject)Instantiate(frontPrefab, Vector3.zero, Quaternion.identity);
-        front.transform.SetParent(frontAnchor, false);
-        GameObject back = (GameObject)Instantiate(backPrefab, Vector3.zero, Quaternion.identity);
-        back.transform.SetParent(backAnchor, false);
-
-        challenge.frontGameObject = front;
-        challenge.backGameObject = back;
+        if (frontPrefab != null)
+        {
+            GameObject front = (GameObject)Instantiate(frontPrefab, Vector3.zero, Quaternion.identity);
+            front.transform.SetParent(frontAnchor, false);
+            challenge.frontGameObject = front;
+        }
+        if (backPrefab != null)
+        {
+            GameObject back = (GameObject)Instantiate(backPrefab, Vector3.zero, Quaternion.identity);
+            back.transform.SetParent(backAnchor, false);
+            challenge.backGameObject = back;
+        }
 
         backDecorated.SetActive(decoratedBack);
         backUndecorated.SetActive(!decoratedBack);

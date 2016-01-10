@@ -19,10 +19,15 @@ public class LevelChallengePrefabs
     public GameObject ButtonChallengeBack;
     public bool ButtonChallengeDecoratedBack;
 
-	[Header("Button Sequence Challenge")]
-	public GameObject ButtonSequenceChallengeFront;
+    [Header("Button Sequence Challenge")]
+    public GameObject ButtonSequenceChallengeFront;
     public GameObject ButtonSequenceChallengeBack;
     public bool ButtonSequenceChallengeDecoratedBack;
+
+    [Header("Sliders & Knobs Challenge")]
+    public GameObject SlidersKnobsChallengeFront;
+    public GameObject SlidersKnobsChallengeBack;
+    public bool SlidersKnobsChallengeDecoratedBack;
 
     public GameObject GetFrontPrefab(Type challengeType)
     {

@@ -14,7 +14,8 @@ public class LevelGenerationOptions
     public Color[] colorGroups;
     public Type[] availableChallenges = { 
 		typeof(ButtonChallenge),
-		typeof(ButtonSequenceChallenge)
+		typeof(ButtonSequenceChallenge),
+		typeof(SlidersKnobsChallenge),
 	};
 
     // will be extended with additional parameters and logic later
