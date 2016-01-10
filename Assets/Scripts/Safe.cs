@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class Safe : MonoBehaviour
 {
@@ -39,16 +40,22 @@ public class Safe : MonoBehaviour
 
     void Update()
     {
-        if(active)
+        if (active)
         {
             // count down timer
             remainingTime -= Time.deltaTime;
-            
+
             if (remainingTime < 0)
                 // TODO lose game; for now just reset to max value (easier testing when you're not constantly losing ...)
                 remainingTime = maxTimer;
 
             UpdateTimerText();
+        }
+        else {
+            timerDigit1.text = "";
+            timerDigit2.text = "";
+            timerDot.enabled = true;
+            timerDot.text = "OFF";
         }
     }
 
@@ -68,7 +75,33 @@ public class Safe : MonoBehaviour
         //doorAnchor.localRotation = Quaternion.Euler(0, -90, 0);
         StartCoroutine(RotateSafeDoorSmoothly());
         // TODO process game logic (activate next safes, etc)
+
         SetActive(false);
+
+        #region Unlocking same colored safe
+        //Activating new safes of same coloring
+        Level lvl = GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>();   //didn't want to add another variable at the top, so I'm using a tag
+        //Randomizing the original list so we can choose randomly
+        List<Safe> temp = new List<Safe>(lvl.safes);
+        temp.Remove(this);
+        List<Safe> randomizedList = new List<Safe>();
+        for (int i = 0; i < temp.Count; i++)
+        {
+            int index = Random.Range(0, temp.Count);
+            randomizedList.Add(temp[index]);
+            temp.RemoveAt(index);
+        }
+        foreach (Safe sf in randomizedList)
+        {
+            if (sf.frameRenderer.material.color == this.frameRenderer.material.color && numberOfSafesToActivate > 0)
+            {
+                sf.SetActive(true);
+                print(sf.gameObject.name+" was activated!");
+                numberOfSafesToActivate--;
+            }
+        }
+        #endregion
+
         challenge.enabled = false;
     }
     public void FailChallenge()

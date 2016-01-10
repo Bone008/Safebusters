@@ -35,7 +35,7 @@ public class Level : MonoBehaviour
         
 		// create safe gameobjects and logic
 		safes = new List<Safe>();
-
+        int currentlyActiveSafeCount = 0;
         for (int i = 0; i < generationOptions.safesToGenerate; i++)
         {
 			// create GameObject
@@ -62,7 +62,15 @@ public class Level : MonoBehaviour
             safe.SetBackwards(i % 2 == 1);
             safe.SetMaxTimer(UnityEngine.Random.Range(30, 61));
             safe.SpawnChallengeObjects(frontPrefab, backPrefab, decoratedBack);
-            safe.SetActive(true);
+            if (currentlyActiveSafeCount < generationOptions.AOASAS && UnityEngine.Random.value < 0.3f)
+            {
+                safe.SetActive(true);
+                print(go.name+" is active at start");
+                currentlyActiveSafeCount++;
+            }
+            else {
+                safe.SetActive(false);
+            }
 
             // get random colorgroup (should be improved at some point)
             Color color = generationOptions.colorGroups[UnityEngine.Random.Range(0, generationOptions.colorGroups.Length)];
@@ -72,7 +80,17 @@ public class Level : MonoBehaviour
             safe.SetNumberOfSafesToActivate(1);
 
             safes.Add(safe);
+        }  
+        //make sure we do actually have the specified amount of safes active
+        while (currentlyActiveSafeCount < generationOptions.AOASAS) {
+            int rI = UnityEngine.Random.Range(0, safes.Count);
+            if(!safes[rI].IsActive){
+                safes[rI].SetActive(true);
+                print(safes[rI].gameObject.name + " is active at start (by force)");
+                currentlyActiveSafeCount++;
+            }
         }
+        print("currently active safes count: " + currentlyActiveSafeCount);
     }
 
 

@@ -9,6 +9,7 @@ public class LevelGenerationOptions
 {
     public int safesToGenerate = 12;
     public int safesPerRow = 3;
+    public int AOASAS = 5;  //Amount of active safes at start
 
     public Color[] colorGroups;
     public Type[] availableChallenges = { 
