@@ -6,7 +6,7 @@ using System.Linq;
 
 public class ButtonSequenceChallenge : AbstractChallenge
 {
-    private const int LONGEST_SEQUENCE_TO_PRESS = 5;
+    private const int LONGEST_SEQUENCE_TO_PRESS = 10;
 
     private List<GameButton> buttonsToPress;
 
