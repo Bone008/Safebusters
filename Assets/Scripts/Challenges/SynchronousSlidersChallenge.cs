@@ -4,14 +4,16 @@ using System.Collections;
 
 public class SynchronousSlidersChallenge : AbstractChallenge
 {
-
     private const float MAX_EPSILON = 0.1f;
+    private const float START_EPSILON = 0.9f;
 
     private SliderController leftSliderFront;
     private SliderController rightSliderFront;
 
     private SliderController leftSliderBack;
     private SliderController rightSliderBack;
+
+    private bool hasStarted = false; // Wait, until both players set their sliders to 1, then start judging
 
     protected override void InitChallenge()
     {
@@ -31,7 +33,10 @@ public class SynchronousSlidersChallenge : AbstractChallenge
     {
         // Sync-Challenge -> Both focus required
         if (!hasFocusFront || !hasFocusBack)
+        {
+            hasStarted = false;
             return;
+        }
 
         // Get Input
         float lsf, rsf, lsb, rsb;
@@ -45,8 +50,25 @@ public class SynchronousSlidersChallenge : AbstractChallenge
         rightSliderFront.SetValue(rsf);
         leftSliderBack.SetValue(lsb);
         rightSliderBack.SetValue(rsb);
+
+        // Check if started
+        if(lsf >= START_EPSILON && rsf >= START_EPSILON && lsb >= START_EPSILON && rsb >= START_EPSILON)
+        {
+            hasStarted = true;
+            // TODO: do stuff to show the players that the challenge has started
+        }
+
+        // Abort here if not started
+        if (!hasStarted)
+            return;
+
+        // Check if solved
+        if(lsf <= MAX_EPSILON && rsf <= MAX_EPSILON && lsb <= MAX_EPSILON && rsb <= MAX_EPSILON)
+        {
+            safe.SolveChallenge();
+        }
                
-        // Check if failed (simple)
+        // Check if failed (simple) (distance between corresponding sliders >= max epsilon)
         if((Math.Abs(lsf - lsb) >= MAX_EPSILON) || (Math.Abs(rsf - rsb) >= MAX_EPSILON))
         {
             safe.FailChallenge();
