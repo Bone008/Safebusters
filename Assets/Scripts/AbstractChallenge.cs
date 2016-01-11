@@ -35,4 +35,14 @@ public abstract class AbstractChallenge : MonoBehaviour
     {
         backInputState = state;
     }
+    
+    public void SetFrontFocus(bool flag)
+    {
+        hasFocusFront = flag;
+    }
+
+    public void SetBackFocus(bool flag)
+    {
+        hasFocusBack = flag;
+    }
 }

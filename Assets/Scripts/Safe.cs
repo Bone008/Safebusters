@@ -150,6 +150,14 @@ public class Safe : MonoBehaviour
         active = flag;
     }
 
+    public void SetFocus(bool isPlayer2, bool flag)
+    {
+        if (isPlayer2 == backwards)
+            challenge.SetFrontFocus(flag);
+        else
+            challenge.SetBackFocus(flag);
+    }
+
     public void SetMaxTimer(float time)
     {
         maxTimer = time;

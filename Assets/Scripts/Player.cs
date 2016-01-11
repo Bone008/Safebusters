@@ -47,13 +47,10 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        // amount of safes (shorter)
-        int safeCount = level.safes.Count;
-
         // if focusedSafe isnt active anymore -> focus next active one
         while (!level.safes[focusedSafe].IsActive)
         {
-            focusedSafe = (focusedSafe + 1) % safeCount;
+            nextSafe();
         }
 
         // far left/right key pressed -> focus next active safe
@@ -61,11 +58,11 @@ public class Player : MonoBehaviour
         {
             if (input.FarRightPressed)
             {
-                focusedSafe = (focusedSafe + 1) % safeCount;
+                nextSafe();
             }
             if (input.FarLeftPressed)
             {
-                focusedSafe = (focusedSafe + safeCount - 1) % safeCount;
+                previousSafe();
             }
         } while (!level.safes[focusedSafe].IsActive);
 
@@ -91,4 +88,17 @@ public class Player : MonoBehaviour
         level.safes[focusedSafe].SetInputState(isPlayer2, input.GameInputState);
     }
 
+    private void nextSafe()
+    {
+        level.safes[focusedSafe].SetFocus(isPlayer2, false);
+        focusedSafe = (focusedSafe + 1) % level.safes.Count;
+        level.safes[focusedSafe].SetFocus(isPlayer2, true);
+    }
+
+    private void previousSafe()
+    {
+        level.safes[focusedSafe].SetFocus(isPlayer2, false);
+        focusedSafe = (focusedSafe + level.safes.Count - 1) % level.safes.Count;
+        level.safes[focusedSafe].SetFocus(isPlayer2, true);
+    }
 }
