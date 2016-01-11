@@ -34,6 +34,11 @@ public class LevelChallengePrefabs
     public GameObject SlidersKnobsChallengeBack;
     public bool SlidersKnobsChallengeDecoratedBack;
 
+    [Header("Synchronous Sliders Challenge")]
+    public GameObject SynchronousSlidersChallengeFront;
+    public GameObject SynchronousSlidersChallengeBack;
+    public bool SynchronousSlidersChallengeDecoratedBack;
+
     public GameObject GetFrontPrefab(Type challengeType)
     {
         FieldInfo field = typeof(LevelChallengePrefabs).GetField(challengeType.Name + "Front");

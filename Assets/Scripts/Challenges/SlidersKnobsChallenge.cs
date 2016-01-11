@@ -4,7 +4,7 @@ using System;
 
 public class SlidersKnobsChallenge : AbstractChallenge
 {
-    private const float EPSILON = 0.1f;
+    private const float EPSILON = 0.1f; // max difference between actual value and goal to solve challenge
 
     private SliderController leftSlider;
     private SliderController rightSlider;
