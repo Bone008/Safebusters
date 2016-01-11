@@ -3,7 +3,7 @@ using System.Collections;
 
 public class LampController : MonoBehaviour {
     
-    private Renderer renderer;
+    private Renderer meshRenderer;
     private Color initialAlbedo;
 
     private Color lightColor = Color.white;
@@ -11,8 +11,8 @@ public class LampController : MonoBehaviour {
 
     void Awake()
     {
-        renderer = GetComponent<Renderer>();
-        initialAlbedo = renderer.sharedMaterials[1].color;
+        meshRenderer = GetComponent<Renderer>();
+        initialAlbedo = meshRenderer.sharedMaterials[1].color;
     }
     
     public void SetLightColor(Color color)
@@ -37,7 +37,7 @@ public class LampController : MonoBehaviour {
 
     private void UpdateView()
     {
-        Material glassMat = renderer.materials[1];
+        Material glassMat = meshRenderer.materials[1];
 
         if (turnedOn)
         {

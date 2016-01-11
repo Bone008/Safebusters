@@ -43,25 +43,15 @@ public class ButtonChallenge : AbstractChallenge
     void Update()
     {
         // TODO: remove?
-        if (!hasFocusFront)
+        if (!hasFocusFront || inputLocked)
             return;
-
-        GameButton held = frontInputState.HeldButtons;
-
-        if (inputLocked)
-        {
-            // treat as no input
-            held = GameButton.None;
-        }
-        else
-        {
-            // update front LEDs
-            frontLampLeft.SetTurnedOn((frontInputState.HeldButtons & GameButton.Left) != 0);
-            frontLampRight.SetTurnedOn((frontInputState.HeldButtons & GameButton.Right) != 0);
-            frontLampTop.SetTurnedOn((frontInputState.HeldButtons & GameButton.Top) != 0);
-            frontLampBottom.SetTurnedOn((frontInputState.HeldButtons & GameButton.Bottom) != 0);
-        }
-
+              
+        // update front LEDs
+        frontLampLeft.SetTurnedOn((frontInputState.HeldButtons & GameButton.Left) != 0);
+        frontLampRight.SetTurnedOn((frontInputState.HeldButtons & GameButton.Right) != 0);
+        frontLampTop.SetTurnedOn((frontInputState.HeldButtons & GameButton.Top) != 0);
+        frontLampBottom.SetTurnedOn((frontInputState.HeldButtons & GameButton.Bottom) != 0);
+        
         // buttons changed --> reset timer
         if (frontInputState.HeldButtons != lastHeld)
         {

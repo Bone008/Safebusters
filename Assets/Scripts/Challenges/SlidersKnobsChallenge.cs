@@ -1,16 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class SlidersKnobsChallenge : AbstractChallenge
 {
+    private const float EPSILON = 0.1f;
 
     private SliderController leftSlider;
     private SliderController rightSlider;
     private KnobController leftKnob;
     private KnobController rightKnob;
 
+    private float leftSliderGoal;
+    private float rightSliderGoal;
+    private float leftKnobGoal;
+    private float rightKnobGoal;
+
     protected override void InitChallenge()
     {
+        // GUI
         var sliders = frontGameObject.GetComponentsInChildren<SliderController>();
         leftSlider = sliders[0];
         rightSlider = sliders[1];
@@ -18,6 +26,12 @@ public class SlidersKnobsChallenge : AbstractChallenge
         var knobs = frontGameObject.GetComponentsInChildren<KnobController>();
         leftKnob = knobs[0];
         rightKnob = knobs[1];
+
+        // Challenge
+        leftSliderGoal = UnityEngine.Random.value;
+        rightSliderGoal = UnityEngine.Random.value;
+        leftKnobGoal = UnityEngine.Random.value;
+        rightKnobGoal = UnityEngine.Random.value;
     }
 
     void Update()
@@ -25,10 +39,27 @@ public class SlidersKnobsChallenge : AbstractChallenge
         if (!hasFocusFront)
             return;
 
-        leftSlider.SetValue(frontInputState.GetAnalogInput(GameAnalogInput.LeftSlider));
-        rightSlider.SetValue(frontInputState.GetAnalogInput(GameAnalogInput.RightSlider));
-        leftKnob.SetValue(frontInputState.GetAnalogInput(GameAnalogInput.LeftKnob));
-        rightKnob.SetValue(frontInputState.GetAnalogInput(GameAnalogInput.RightKnob));
+        float ls, rs, lk, rk;
+        ls = frontInputState.GetAnalogInput(GameAnalogInput.LeftSlider);
+        rs = frontInputState.GetAnalogInput(GameAnalogInput.RightSlider);
+        lk = frontInputState.GetAnalogInput(GameAnalogInput.LeftKnob);
+        rk = frontInputState.GetAnalogInput(GameAnalogInput.RightKnob);
+
+        // Update GUI
+        leftSlider.SetValue(ls);
+        rightSlider.SetValue(rs);
+        leftKnob.SetValue(lk);
+        rightKnob.SetValue(rk);
+
+        // Check if goal is reached (simple)
+        if((Math.Abs(ls - leftSliderGoal) <= EPSILON)
+            && (Math.Abs(rs - rightSliderGoal) <= EPSILON)
+            && (Math.Abs(lk - leftKnobGoal) <= EPSILON)
+            && (Math.Abs(rk - rightKnobGoal) <= EPSILON))
+        {
+            safe.SolveChallenge();
+        }
+
     }
 
 }
