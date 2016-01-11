@@ -24,6 +24,11 @@ public class LevelChallengePrefabs
     public GameObject ButtonSequenceChallengeBack;
     public bool ButtonSequenceChallengeDecoratedBack;
 
+    [Header("Interconnected Dials Challenge")]
+    public GameObject InterconnectedDialChallengeFront;
+    public GameObject InterconnectedDialChallengeBack;
+    public bool InterconnectedDialChallengeDecoratedBack;
+
     [Header("Sliders & Knobs Challenge")]
     public GameObject SlidersKnobsChallengeFront;
     public GameObject SlidersKnobsChallengeBack;

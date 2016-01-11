@@ -15,7 +15,8 @@ public class LevelGenerationOptions
     public Type[] availableChallenges = { 
 		typeof(ButtonChallenge),
 		typeof(ButtonSequenceChallenge),
-		typeof(SlidersKnobsChallenge),
+        typeof(InterconnectedDialChallenge),
+		typeof(SlidersKnobsChallenge)
 	};
 
     // will be extended with additional parameters and logic later
