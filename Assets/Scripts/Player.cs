@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
     public bool isPlayer2 = false;
 
     public bool useCactus = false;
+	public string port;
 
     // index of the safe in focus
     [HideInInspector]
@@ -37,6 +38,7 @@ public class Player : MonoBehaviour
         {
             this.gameObject.AddComponent<CactusController>();
             input = this.gameObject.GetComponent<CactusController>();
+			((CactusController)input).port = port;
         }
         else
         {

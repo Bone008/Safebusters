@@ -8,10 +8,12 @@ using System;
 
 public class CactusController : MonoBehaviour, InputIF {
 
+	public string port;
+
 	private const float ACCEL_GRAVITATION_NORM = 0.5f;
 
 	private InputState inputState = new InputState();
-	private SerialPort stream = new SerialPort("COM3", 115200); //TODO: make COM3 settable for each player
+	private SerialPort stream; //TODO: make COM3 settable for each player
 
 	private int[] buttonMasks = new int[]{
 		64,  	//Up
@@ -25,10 +27,12 @@ public class CactusController : MonoBehaviour, InputIF {
 	private bool farLeftPressed = false;
 	private bool farRightPressed = false;
 
-	private GameButton lastPressed = GameButton.None;
 	private bool farLeftLastPressed = false;
 	private bool farRightLastPressed = false;
-
+	private bool leftLastPressed = false;
+	private bool rightLastPressed = false;
+	private bool topLastPressed = false;
+	private bool bottomLastPressed = false;
 
     public InputState GameInputState { get { return inputState; } }
     public bool FarLeftPressed { get { return farLeftPressed; } }
@@ -36,6 +40,7 @@ public class CactusController : MonoBehaviour, InputIF {
 
 
 	void Start(){
+		stream = new SerialPort(port, 115200);
 		try { stream.Open(); }
 		catch (IOException e)
 		{
@@ -70,7 +75,7 @@ public class CactusController : MonoBehaviour, InputIF {
 		response = stream.ReadLine();
 		int[] analogInputs = response.Split(' ').Skip(1).Select(s => Convert.ToInt32(s, 16)).ToArray();
 		for (int i = 0; i < 4; i++) {
-			inputState.SetAnalogInput ((GameAnalogInput)i, analogInputs[i] / 4096.0f);
+			inputState.SetAnalogInput ((GameAnalogInput)i, 1 - (analogInputs[i] / 4096.0f));
 		}
 
 		// read microphone
@@ -100,24 +105,75 @@ public class CactusController : MonoBehaviour, InputIF {
 	private GameButton checkButtonsPressed (int buttonVal){
 		GameButton flags = GameButton.None;
 
-		// TODO: not sure if works
-		farLeftPressed = !farLeftLastPressed && ((buttonVal & buttonMasks [4]) != 0);
-		farRightPressed = !farRightLastPressed && ((buttonVal & buttonMasks [5]) != 0);	
-		farLeftLastPressed = farLeftPressed;
-		farRightLastPressed = farRightPressed;
+		// Far left
+		farLeftPressed = ((buttonVal & buttonMasks [4]) != 0);
+		if (farLeftPressed) {
+			if (farLeftLastPressed) {
+				farLeftPressed = false;
+			}
+			farLeftLastPressed = true;
+		}else if (!farLeftPressed) {
+			farLeftLastPressed = false;
+		}
 
+		// Far right
+		farRightPressed = ((buttonVal & buttonMasks [5]) != 0);	
+		if (farRightPressed) {
+			if (farRightLastPressed) {
+				farRightPressed = false;
+			}
+			farRightLastPressed = true;
+		} else if (!farRightPressed) {
+			farRightLastPressed = false;
+		}
+
+		bool topPressed, bottomPressed, leftPressed, rightPressed;
+		topPressed = (buttonVal & buttonMasks [0]) != 0;
+		if (topPressed) {
+			if (topLastPressed) {
+				topPressed = false;
+			}
+			topLastPressed = true;
+		} else if (!topPressed) {
+			topLastPressed = false;
+		}
+		bottomPressed = (buttonVal & buttonMasks [1]) != 0;
+		if (bottomPressed) {
+			if (bottomLastPressed) {
+				bottomPressed = false;
+			}
+			bottomLastPressed = true;
+		} else if (!bottomPressed) {
+			bottomLastPressed = false;
+		}
+		leftPressed = (buttonVal & buttonMasks [2]) != 0;
+		if (leftPressed) {
+			if (leftLastPressed) {
+				leftPressed = false;
+			}
+			leftLastPressed = true;
+		} else if (!leftPressed) {
+			leftLastPressed = false;
+		}
+		rightPressed = (buttonVal & buttonMasks [3]) != 0;
+		if (rightPressed) {
+			if (rightLastPressed) {
+				rightPressed = false;
+			}
+			rightLastPressed = true;
+		} else if (!rightPressed) {
+			rightLastPressed = false;
+		}
 		// TODO: not sure if works
-		if (((lastPressed & GameButton.Top) == 0) && ((buttonVal & buttonMasks [0]) != 0))
+		if (topPressed)
 			flags |= GameButton.Top;
-		if (((lastPressed & GameButton.Bottom) == 0) && ((buttonVal & buttonMasks [1]) != 0))
+		if (bottomPressed)
 			flags |= GameButton.Bottom;
-		if (((lastPressed & GameButton.Left) == 0) && ((buttonVal & buttonMasks [2]) != 0))
+		if (leftPressed)
 			flags |= GameButton.Left;
-		if (((lastPressed & GameButton.Right) == 0) && ((buttonVal & buttonMasks [3]) != 0))
+		if (rightPressed)
 			flags |= GameButton.Right;
 
-		lastPressed =  flags;
-		
 		return flags;
 	}
 
