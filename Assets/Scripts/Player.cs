@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Linq;
 
 /// <summary>
 /// A player playing the game.
@@ -52,30 +53,43 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        // TODO there will be endless loops here when there are no endless safes left
+        Vector3 targetPosition;
 
-        // if focusedSafe isnt active anymore -> focus next active one
-        while (!level.safes[focusedSafe].IsActive)
+        // as long as there are active safes left
+        if (level.safes.Any(s => s.IsActive))
         {
-            nextSafe();
-        }
-
-        // far left/right key pressed -> focus next active safe
-        do
-        {
-            if (input.FarRightPressed)
+            // if focusedSafe isnt active anymore -> focus next active one
+            while (!level.safes[focusedSafe].IsActive)
             {
                 nextSafe();
             }
-            if (input.FarLeftPressed)
+
+            // far left/right key pressed -> focus next active safe
+            do
             {
-                previousSafe();
-            }
-        } while (!level.safes[focusedSafe].IsActive);
+                if (input.FarRightPressed)
+                {
+                    nextSafe();
+                }
+                if (input.FarLeftPressed)
+                {
+                    previousSafe();
+                }
+            } while (!level.safes[focusedSafe].IsActive);
 
 
-        // smoothly move cam to focussed safe (or behind it if cheating)
-        Vector3 targetPosition = level.safes[focusedSafe].transform.position + cameraOffset;
+            // smoothly move cam to focussed safe (or behind it if cheating)
+            targetPosition = level.safes[focusedSafe].transform.position + cameraOffset;
+
+            // send input to safe
+            level.safes[focusedSafe].SetInputState(isPlayer2, input.GameInputState);
+        }
+        else
+        {
+            // no active safes left --> zoom out
+            float centerY = level.safes[level.safes.Count / 2].transform.position.y;
+            targetPosition = new Vector3(0, centerY, 0) + 2 * cameraOffset;
+        }
 
         // cheat for testing
         if (Input.GetKey(KeyCode.LeftAlt))
@@ -91,8 +105,6 @@ public class Player : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * cameraSpeed);
 
 
-        // send input to safe
-        level.safes[focusedSafe].SetInputState(isPlayer2, input.GameInputState);
     }
 
     private void nextSafe()
