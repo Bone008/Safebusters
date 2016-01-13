@@ -60,9 +60,14 @@ public class Level : MonoBehaviour
 			// initialize safe logic
 			Safe safe = go.GetComponent<Safe>();
 			safe.challenge = challenge;   
-            safe.SetBackwards(i % 2 == 1);
             safe.SetMaxTimer(UnityEngine.Random.Range(30, 61));
             safe.SpawnChallengeObjects(frontPrefab, backPrefab, decoratedBack);
+
+            safe.SetBackwards(i % 2 == 1);
+            // this is a possible alternative algorithm where the left half of the wall is front-facing
+            // and the right half is back-facing (uneven safes-per-row numbers alternate front/back in the middle
+            //int spr = generationOptions.safesPerRow;
+            //safe.SetBackwards(i % spr >= (spr / 2) || (spr % 2 == 1 && i % spr == (spr / 2) && (i / spr % 2) == 1));
 
             bool shouldActivate;
             if (generationOptions.activateRandomly)

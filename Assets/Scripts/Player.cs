@@ -44,10 +44,16 @@ public class Player : MonoBehaviour
         {
             input = this.gameObject.AddComponent<HomeController>();
         }
+
+        // fix initially focused safe for player 2
+        if (isPlayer2)
+            focusedSafe = level.generationOptions.safesPerRow - 1;
     }
 
     void Update()
     {
+        // TODO there will be endless loops here when there are no endless safes left
+
         // if focusedSafe isnt active anymore -> focus next active one
         while (!level.safes[focusedSafe].IsActive)
         {
@@ -92,20 +98,44 @@ public class Player : MonoBehaviour
     private void nextSafe()
     {
         level.safes[focusedSafe].SetFocus(isPlayer2, false);
+        
         if (!isPlayer2)
             focusedSafe = (focusedSafe + 1) % level.safes.Count;
         else
-            focusedSafe = (focusedSafe + level.safes.Count - 1) % level.safes.Count;
+        {
+            // check if we need to jump to next row
+            if (focusedSafe % level.generationOptions.safesPerRow == 0)
+                focusedSafe += 2 * level.generationOptions.safesPerRow - 1;
+            // decrease otherwise
+            else
+                focusedSafe -= 1;
+
+            // stay in bounds
+            focusedSafe = (focusedSafe + level.safes.Count) % level.safes.Count;
+        }
+
         level.safes[focusedSafe].SetFocus(isPlayer2, true);
     }
 
     private void previousSafe()
     {
         level.safes[focusedSafe].SetFocus(isPlayer2, false);
+
         if (!isPlayer2)
-            focusedSafe = (focusedSafe + level.safes.Count - 1) % level.safes.Count;
+            focusedSafe = (focusedSafe - 1 + level.safes.Count) % level.safes.Count;
         else
-            focusedSafe = (focusedSafe + 1) % level.safes.Count;
+        {
+            // check if we need to jump to previous row
+            if (focusedSafe % level.generationOptions.safesPerRow == level.generationOptions.safesPerRow - 1)
+                focusedSafe -= (2 * level.generationOptions.safesPerRow - 1);
+            // increase otherwise
+            else
+                focusedSafe += 1;
+
+            // stay in bounds
+            focusedSafe = (focusedSafe + level.safes.Count) % level.safes.Count;
+        }
+
         level.safes[focusedSafe].SetFocus(isPlayer2, true);
     }
 }
