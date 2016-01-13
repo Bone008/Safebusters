@@ -93,14 +93,20 @@ public class Player : MonoBehaviour
     private void nextSafe()
     {
         level.safes[focusedSafe].SetFocus(isPlayer2, false);
-        focusedSafe = (focusedSafe + 1) % level.safes.Count;
+        if (!isPlayer2)
+            focusedSafe = (focusedSafe + 1) % level.safes.Count;
+        else
+            focusedSafe = (focusedSafe + level.safes.Count - 1) % level.safes.Count;
         level.safes[focusedSafe].SetFocus(isPlayer2, true);
     }
 
     private void previousSafe()
     {
         level.safes[focusedSafe].SetFocus(isPlayer2, false);
-        focusedSafe = (focusedSafe + level.safes.Count - 1) % level.safes.Count;
+        if (!isPlayer2)
+            focusedSafe = (focusedSafe + level.safes.Count - 1) % level.safes.Count;
+        else
+            focusedSafe = (focusedSafe + 1) % level.safes.Count;
         level.safes[focusedSafe].SetFocus(isPlayer2, true);
     }
 }
