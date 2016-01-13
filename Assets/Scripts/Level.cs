@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System;
 
 /// <summary>
@@ -62,7 +63,14 @@ public class Level : MonoBehaviour
             safe.SetBackwards(i % 2 == 1);
             safe.SetMaxTimer(UnityEngine.Random.Range(30, 61));
             safe.SpawnChallengeObjects(frontPrefab, backPrefab, decoratedBack);
-            if (currentlyActiveSafeCount < generationOptions.AOASAS && UnityEngine.Random.value < 0.3f)
+
+            bool shouldActivate;
+            if (generationOptions.activateRandomly)
+                shouldActivate = (currentlyActiveSafeCount < generationOptions.safesActiveAtStart && UnityEngine.Random.value < 0.3f);
+            else
+                shouldActivate = (i < generationOptions.safesActiveAtStart);
+
+            if (shouldActivate)
             {
                 safe.SetActive(true);
                 print(go.name+" is active at start");
@@ -80,21 +88,51 @@ public class Level : MonoBehaviour
             safe.SetNumberOfSafesToActivate(1);
 
             safes.Add(safe);
-        }  
-        //make sure we do actually have the specified amount of safes active
-        while (currentlyActiveSafeCount < generationOptions.AOASAS) {
-            int rI = UnityEngine.Random.Range(0, safes.Count);
-            if(!safes[rI].IsActive){
-                safes[rI].SetActive(true);
-                print(safes[rI].gameObject.name + " is active at start (by force)");
-                currentlyActiveSafeCount++;
+        }
+
+        if (generationOptions.activateRandomly)
+        {
+            //make sure we do actually have the specified amount of safes active
+            while (currentlyActiveSafeCount < generationOptions.safesActiveAtStart)
+            {
+                int rI = UnityEngine.Random.Range(0, safes.Count);
+                if (!safes[rI].IsActive)
+                {
+                    safes[rI].SetActive(true);
+                    print(safes[rI].gameObject.name + " is active at start (by force)");
+                    currentlyActiveSafeCount++;
+                }
             }
         }
         print("currently active safes count: " + currentlyActiveSafeCount);
     }
 
-
-    void Update()
+    // activates [amount] new safes of the same color as [color]
+    public void ActivateNewSafes(Color color, int amount)
     {
+        if(generationOptions.activateRandomly)
+        {
+            List<Safe> candidates = safes.Where(s => !s.IsActive && !s.IsOpen && s.GetDisplayColor() == color).ToList();
+            // activate [amount] random safes, but not more than still available
+            int count = Mathf.Min(amount, candidates.Count);
+            for(int i=0; i<count; i++)
+            {
+                int index = UnityEngine.Random.Range(0, candidates.Count);
+                candidates[index].SetActive(true);
+                print(candidates[index].gameObject.name + " was activated!");
+                candidates.RemoveAt(index);
+            }
+        }
+        else
+        {
+            // take the first (up to) [amount] inactive safes of that color and activate them
+            var toActivate = safes.Where(s => !s.IsActive && !s.IsOpen && s.GetDisplayColor() == color).Take(amount);
+            foreach (Safe safe in toActivate)
+            {
+                safe.SetActive(true);
+                print(safe.gameObject.name + " was activated!");
+            }
+        }
     }
+
 }

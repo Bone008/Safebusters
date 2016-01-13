@@ -29,10 +29,13 @@ public class Safe : MonoBehaviour
     private float maxTimer;
     private int numberOfSafesToActivate;
 
+    private Color displayColor;
     private bool active = true;
     private float remainingTime;
+    private bool open = false;
 
     public bool IsActive { get { return active; } }
+    public bool IsOpen { get { return open; } }
 
     void Start()
     {
@@ -74,35 +77,14 @@ public class Safe : MonoBehaviour
         // open door
         //doorAnchor.localRotation = Quaternion.Euler(0, -90, 0);
         StartCoroutine(RotateSafeDoorSmoothly());
-        // TODO process game logic (activate next safes, etc)
-
+        
+        open = true;
         SetActive(false);
+        challenge.enabled = false;
 
-        #region Unlocking same colored safe
         //Activating new safes of same coloring
         Level lvl = GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>();   //didn't want to add another variable at the top, so I'm using a tag
-        //Randomizing the original list so we can choose randomly
-        List<Safe> temp = new List<Safe>(lvl.safes);
-        temp.Remove(this);
-        List<Safe> randomizedList = new List<Safe>();
-        for (int i = 0; i < temp.Count; i++)
-        {
-            int index = Random.Range(0, temp.Count);
-            randomizedList.Add(temp[index]);
-            temp.RemoveAt(index);
-        }
-        foreach (Safe sf in randomizedList)
-        {
-            if (sf.frameRenderer.material.color == this.frameRenderer.material.color && numberOfSafesToActivate > 0)
-            {
-                sf.SetActive(true);
-                print(sf.gameObject.name+" was activated!");
-                numberOfSafesToActivate--;
-            }
-        }
-        #endregion
-
-        challenge.enabled = false;
+        lvl.ActivateNewSafes(displayColor, numberOfSafesToActivate);
     }
     public void FailChallenge()
     {
@@ -137,6 +119,7 @@ public class Safe : MonoBehaviour
 
     public void SetDisplayColor(Color color)
     {
+        displayColor = color;
         frameRenderer.material.color = color;
     }
 
@@ -188,6 +171,11 @@ public class Safe : MonoBehaviour
         return frameRenderer.bounds;
     }
 
+    public Color GetDisplayColor()
+    {
+        return displayColor;
+    }
+
     /// <summary>Returns the width of the area on the safe usable by challenges on the front side. Note that this returns a negative value.</summary>
     public float GetUsableFrontWidth()
     {
@@ -200,7 +188,7 @@ public class Safe : MonoBehaviour
         return frontAnchorBottomRight.localPosition.y - frontAnchor.localPosition.y;
     }
 
-    IEnumerator RotateSafeDoorSmoothly()
+    private IEnumerator RotateSafeDoorSmoothly()
     {
         float passedTime = 0;
         // animate for [doorOpeningDuration] seconds

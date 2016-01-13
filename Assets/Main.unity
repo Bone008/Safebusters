@@ -661,10 +661,11 @@ MonoBehaviour:
   generationOptions:
     safesToGenerate: 12
     safesPerRow: 3
-    AOASAS: 6
+    safesActiveAtStart: 5
+    activateRandomly: 0
     colorGroups:
     - {r: 1, g: 0, b: 0, a: 0}
-    - {r: .903448224, g: 1, b: 0, a: 0}
+    - {r: 0.9034482, g: 1, b: 0, a: 0}
   challengePrefabs:
     ButtonChallengeFront: {fileID: 110780, guid: 5f3e4695a181ba94d976c2b1bad5ec37,
       type: 2}
