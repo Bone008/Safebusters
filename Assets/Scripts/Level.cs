@@ -71,9 +71,13 @@ public class Level : MonoBehaviour
 
             bool shouldActivate;
             if (generationOptions.activateRandomly)
-                shouldActivate = (currentlyActiveSafeCount < generationOptions.safesActiveAtStart && UnityEngine.Random.value < 0.3f);
+            {
+                float activeProbability = generationOptions.safesActiveAtStart / (float)generationOptions.safesToGenerate;
+                shouldActivate = (currentlyActiveSafeCount < generationOptions.safesActiveAtStart && UnityEngine.Random.value < activeProbability);
+            }
             else
                 shouldActivate = (i < generationOptions.safesActiveAtStart);
+
 
             if (shouldActivate)
             {
