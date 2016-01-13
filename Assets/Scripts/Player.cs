@@ -20,11 +20,10 @@ public class Player : MonoBehaviour
     public bool isPlayer2 = false;
 
     public bool useCactus = false;
-	public string port;
+    public string port;
 
     // index of the safe in focus
-    [HideInInspector]
-    public int focusedSafe = 0;
+    private int focusedSafe = 0;
 
     private Quaternion cameraInitialRotation;
 
@@ -34,16 +33,16 @@ public class Player : MonoBehaviour
     {
         cameraInitialRotation = transform.rotation;
 
-        if (useCactus)
+        // when the flag is enabled, try to connect to controller, otherwise fall back to keyboard input
+        System.IO.Ports.SerialPort connection;
+        if (useCactus && (connection = CactusController.TryConnect(port)) != null)
         {
-            this.gameObject.AddComponent<CactusController>();
-            input = this.gameObject.GetComponent<CactusController>();
-			((CactusController)input).port = port;
+            input = this.gameObject.AddComponent<CactusController>();
+            ((CactusController)input).stream = connection;
         }
         else
         {
-            this.gameObject.AddComponent<HomeController>();
-            input = this.gameObject.GetComponent<HomeController>();
+            input = this.gameObject.AddComponent<HomeController>();
         }
     }
 
@@ -73,7 +72,7 @@ public class Player : MonoBehaviour
         Vector3 targetPosition = level.safes[focusedSafe].transform.position + cameraOffset;
 
         // cheat for testing
-        if(Input.GetKey(KeyCode.LeftAlt))
+        if (Input.GetKey(KeyCode.LeftAlt))
         {
             // move behind the safe
             targetPosition -= 2 * cameraOffset;
