@@ -34,6 +34,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &111998
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 423422}
+  m_Layer: 0
+  m_Name: Shutter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
 --- !u!1 &114006
 GameObject:
   m_ObjectHideFlags: 1
@@ -110,6 +125,23 @@ GameObject:
   - 23: {fileID: 2378590}
   m_Layer: 0
   m_Name: BacksideGlue.001
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &137478
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 478696}
+  - 33: {fileID: 3362850}
+  - 23: {fileID: 2337944}
+  m_Layer: 0
+  m_Name: shutter_model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -326,6 +358,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 465390}
   m_RootOrder: 2
+--- !u!4 &423422
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 111998}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.365, y: 0.232, z: -0.008}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 478696}
+  m_Father: {fileID: 436518}
+  m_RootOrder: 4
 --- !u!4 &430756
 Transform:
   m_ObjectHideFlags: 1
@@ -352,6 +397,7 @@ Transform:
   - {fileID: 497798}
   - {fileID: 430756}
   - {fileID: 22459806}
+  - {fileID: 423422}
   m_Father: {fileID: 470046}
   m_RootOrder: 3
 --- !u!4 &441352
@@ -438,7 +484,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 179976}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.309205, y: 0.334, z: -0.45897552}
+  m_LocalPosition: {x: -0.44388425, y: 0.545, z: 0.6182105}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 445720}
@@ -447,6 +493,18 @@ Transform:
   - {fileID: 436518}
   - {fileID: 489680}
   m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!4 &478696
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 137478}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.18, z: 0}
+  m_LocalScale: {x: 0.54221165, y: 0.36, z: 0.01}
+  m_Children: []
+  m_Father: {fileID: 423422}
   m_RootOrder: 0
 --- !u!4 &488686
 Transform:
@@ -540,6 +598,32 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+--- !u!23 &2337944
+MeshRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 137478}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_Materials:
+  - {fileID: 2100000, guid: a88c23011bb7bc84494dab1236a1064e, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 1
+  m_ReflectionProbeUsage: 1
+  m_ProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
   m_MinimumChartSize: 4
@@ -780,6 +864,13 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 192440}
   m_Mesh: {fileID: 4300000, guid: 2e5c563ec25e1ba44981193d4adc94e1, type: 3}
+--- !u!33 &3362850
+MeshFilter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 137478}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!33 &3371396
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -969,6 +1060,23 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 0
   doorOpeningDuration: 0.7
+  shutterOpenCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  shutterOpenDuration: 1.2
   frameRenderer: {fileID: 2316424}
   doorAnchor: {fileID: 436518}
   frontAnchor: {fileID: 497798}
@@ -976,6 +1084,7 @@ MonoBehaviour:
   backAnchor: {fileID: 489680}
   backDecorated: {fileID: 115116}
   backUndecorated: {fileID: 192978}
+  shutter: {fileID: 423422}
   timerDigit1: {fileID: 11420650}
   timerDigit2: {fileID: 11409200}
   timerDot: {fileID: 11444362}

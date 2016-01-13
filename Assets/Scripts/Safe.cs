@@ -8,6 +8,8 @@ public class Safe : MonoBehaviour
 
     public AnimationCurve doorOpeningCurve;
     public float doorOpeningDuration;
+    public AnimationCurve shutterOpenCurve;
+    public float shutterOpenDuration;
 
     [Header("Children mappings")]
     public Renderer frameRenderer;
@@ -17,6 +19,7 @@ public class Safe : MonoBehaviour
     public Transform backAnchor;
     public GameObject backDecorated;
     public GameObject backUndecorated;
+    public Transform shutter;
     [Header("Timer controls")]
     public Text timerDigit1;
     public Text timerDigit2;
@@ -29,6 +32,8 @@ public class Safe : MonoBehaviour
     private float maxTimer;
     private int numberOfSafesToActivate;
 
+    private bool shutterClosed = false;
+
     private Color displayColor;
     private bool active = true;
     private float remainingTime;
@@ -39,6 +44,13 @@ public class Safe : MonoBehaviour
 
     void Start()
     {
+        // initially show the shutter when we are started in inactive state
+        if (!active)
+        {
+            print(name + " is initially inactive");
+            shutter.gameObject.SetActive(true);
+            shutterClosed = true;
+        }
     }
 
     void Update()
@@ -53,12 +65,6 @@ public class Safe : MonoBehaviour
                 remainingTime = maxTimer;
 
             UpdateTimerText();
-        }
-        else {
-            timerDigit1.text = "";
-            timerDigit2.text = "";
-            timerDot.enabled = true;
-            timerDot.text = "OFF";
         }
     }
 
@@ -76,10 +82,10 @@ public class Safe : MonoBehaviour
         Debug.Log("challenge solved!");
         // open door
         //doorAnchor.localRotation = Quaternion.Euler(0, -90, 0);
-        StartCoroutine(RotateSafeDoorSmoothly());
+        StartCoroutine(AnimateRotateSafeDoor());
         
         open = true;
-        SetActive(false);
+        //SetActive(false); <-- this is now done at the end of the coroutine
         challenge.enabled = false;
 
         //Activating new safes of same coloring
@@ -131,6 +137,14 @@ public class Safe : MonoBehaviour
     public void SetActive(bool flag)
     {
         active = flag;
+        UpdateTimerText();
+
+        // when activating and the shutter is still closed
+        if (flag && shutterClosed)
+        {
+            shutterClosed = false;
+            StartCoroutine(AnimateOpenShutter());
+        }
     }
 
     public void SetFocus(bool isPlayer2, bool flag)
@@ -150,19 +164,30 @@ public class Safe : MonoBehaviour
 
     private void UpdateTimerText()
     {
-        if (remainingTime >= 10)
+        if (active)
         {
-            // show whole seconds as a two digit number
-            timerDigit1.text = "" + Mathf.FloorToInt(remainingTime / 10);
-            timerDigit2.text = "" + Mathf.FloorToInt(remainingTime % 10);
-            timerDot.enabled = false;
+            if (remainingTime >= 10)
+            {
+                // show whole seconds as a two digit number
+                timerDigit1.text = "" + Mathf.FloorToInt(remainingTime / 10);
+                timerDigit2.text = "" + Mathf.FloorToInt(remainingTime % 10);
+                timerDot.enabled = false;
+            }
+            else
+            {
+                // show seconds and tenths of a second
+                timerDigit1.text = "" + Mathf.FloorToInt(remainingTime);
+                timerDigit2.text = "" + Mathf.FloorToInt(remainingTime * 10 % 10);
+                timerDot.enabled = true;
+                timerDot.text = ".";
+            }
         }
         else
         {
-            // show seconds and tenths of a second
-            timerDigit1.text = "" + Mathf.FloorToInt(remainingTime);
-            timerDigit2.text = "" + Mathf.FloorToInt(remainingTime * 10 % 10);
+            timerDigit1.text = "";
+            timerDigit2.text = "";
             timerDot.enabled = true;
+            timerDot.text = "OFF";
         }
     }
 
@@ -188,7 +213,7 @@ public class Safe : MonoBehaviour
         return frontAnchorBottomRight.localPosition.y - frontAnchor.localPosition.y;
     }
 
-    private IEnumerator RotateSafeDoorSmoothly()
+    private IEnumerator AnimateRotateSafeDoor()
     {
         float passedTime = 0;
         // animate for [doorOpeningDuration] seconds
@@ -202,6 +227,33 @@ public class Safe : MonoBehaviour
 
         // final step --> fully open
         doorAnchor.localRotation = Quaternion.Euler(0, -90, 0);
+
+        // set to inactive
+        SetActive(false);
+    }
+
+    private IEnumerator AnimateOpenShutter()
+    {
+        Material mat = shutter.GetComponentInChildren<Renderer>().material;
+        
+        float passedTime = 0;
+        while(passedTime < shutterOpenDuration)
+        {
+            float factor = 1 - shutterOpenCurve.Evaluate(passedTime / shutterOpenDuration);
+
+            Vector3 s = shutter.localScale;
+            s.y = factor;
+            shutter.localScale = s;
+
+            Vector2 texScale = mat.mainTextureScale;
+            texScale.y = factor;
+            mat.mainTextureScale = texScale;
+
+            passedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        shutter.gameObject.SetActive(false);
     }
 
 }
