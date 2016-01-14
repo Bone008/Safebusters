@@ -70,7 +70,7 @@ public class InterconnectedDialChallenge : AbstractChallenge {
         if (pressed == GameButton.Right)
         {
             currentlySelectedDial = (currentlySelectedDial + 1) % mainDialList.Count;
-            print(currentlySelectedDial);
+            //print(currentlySelectedDial);
         }
         //Color currently selected dial and rotate it and its connected dials too
         foreach (GameObject go in dials.Keys) {
@@ -80,9 +80,10 @@ public class InterconnectedDialChallenge : AbstractChallenge {
                 go.transform.Rotate(0, 0, knobRotation);
                 foreach (GameObject dial in dials[go]) {
                     dial.transform.Rotate(0, 0, knobRotation);
+					dial.GetComponent<Renderer>().material.color = Color.magenta;
                 }
             }
-            else {
+            else if(!dials[mainDialList[currentlySelectedDial]].Contains(go)){
                 go.GetComponent<Renderer>().material.color = Color.white;
             }
         }
@@ -90,13 +91,20 @@ public class InterconnectedDialChallenge : AbstractChallenge {
         //Check if dials are in correct position, if yes we won!
         int dialsInCorrectPos = 0;
         foreach (GameObject dial in mainDialList) {
-            if (dial.transform.rotation.eulerAngles.z < errorRange && dial.transform.rotation.eulerAngles.z > -errorRange) {
+			Color originalColor = dial.GetComponent<Renderer>().material.color;
+			if (dial.transform.localEulerAngles.z < errorRange || dial.transform.localEulerAngles.z > 360-errorRange) {
                 dialsInCorrectPos++;
-                dial.transform.localRotation = Quaternion.Euler(0,0,0);
-            }
+				dial.GetComponent<Renderer>().material.color = Color.green;
+                //dial.transform.localRotation = Quaternion.Euler(0,0,0);
+			}else{
+				dial.GetComponent<Renderer>().material.color = originalColor;
+			}
         }
-
+		print (dialsInCorrectPos);
         if (dialsInCorrectPos == 4) {
+			foreach (GameObject dial in mainDialList) {
+				dial.transform.localRotation = Quaternion.Euler(0,0,0);
+			}
             safe.SolveChallenge();
         }
     }
