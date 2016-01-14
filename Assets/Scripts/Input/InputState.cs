@@ -6,6 +6,7 @@ public class InputState
 	public GameButton HeldButtons { get; set; }
     public GameButton PressedButtons { get; set; }
     public Vector3 Acceleration { get; set; }
+    public OutputIF Output { get; set; }
 
 	private float[] analogInputs = new float[5];
 

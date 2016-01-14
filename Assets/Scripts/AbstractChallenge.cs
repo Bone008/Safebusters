@@ -10,8 +10,6 @@ public abstract class AbstractChallenge : MonoBehaviour
     protected InputState frontInputState = new InputState();
     protected InputState backInputState = new InputState();
 
-    // TODO think about where to set these properly
-    // maybe they should be properties and when getting their value we just read it from some "master" game object that knows both players
     protected bool hasFocusFront = true;
     protected bool hasFocusBack = true;
 

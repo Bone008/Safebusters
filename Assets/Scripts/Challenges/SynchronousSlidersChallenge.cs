@@ -81,6 +81,9 @@ public class SynchronousSlidersChallenge : AbstractChallenge
             SetStarted(false);
             safe.FailChallenge();
         }
+        
+        frontInputState.Output.SetEngineIntensity(Mathf.Max(Mathf.Abs(lsf - lsb), Mathf.Abs(rsf - rsb)));
+        backInputState.Output.SetEngineIntensity(Mathf.Max(Mathf.Abs(lsf - lsb), Mathf.Abs(rsf - rsb)));
     }
 
     public void SetStarted(bool flag)

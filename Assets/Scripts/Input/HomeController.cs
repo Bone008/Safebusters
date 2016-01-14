@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class HomeController : MonoBehaviour, InputIF
+public class HomeController : MonoBehaviour, InputIF, OutputIF
 {
 
-    private InputState inputState = new InputState();
+    private InputState inputState;
 
     public InputState GameInputState { get { return inputState; } }
     public bool FarLeftPressed { get { return Input.GetKeyDown(KeyCode.LeftArrow); } }
@@ -19,6 +19,12 @@ public class HomeController : MonoBehaviour, InputIF
 	private float microphoneValue = 0.0f;
 
 	private Vector3 accelerometerValue = Vector3.zero;
+
+    void Awake()
+    {
+        // initialize to empty input state for first frame
+        inputState = new InputState { Output = this };
+    }
 
     void Update()
     {
@@ -45,6 +51,7 @@ public class HomeController : MonoBehaviour, InputIF
     private InputState collectInput()
     {
         InputState inputState = new InputState();
+        inputState.Output = this;
 
         inputState.HeldButtons = checkButtonsHeld();
         inputState.PressedButtons = checkButtonsPressed();
@@ -93,6 +100,18 @@ public class HomeController : MonoBehaviour, InputIF
             flags |= GameButton.Right;
 
         return flags;
+    }
+
+    public void SetEngineIntensity(float intensity)
+    {
+        print("Engine: " + intensity);
+        // nop
+    }
+
+    public void SetLEDState(int led, bool state)
+    {
+        // nop
+        print("LED #" + led + ": " + state);
     }
 
 }

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Globalization;
 using System;
 
-public class CactusController : MonoBehaviour, InputIF
+public class CactusController : MonoBehaviour, InputIF, OutputIF
 {
 
     // called by the player script to determine availability of cactus controller
@@ -31,7 +31,7 @@ public class CactusController : MonoBehaviour, InputIF
 
     private const float ACCEL_GRAVITATION_NORM = 0.5f;
 
-    private InputState inputState = new InputState();
+    private InputState inputState;
 
     private int[] buttonMasks = new int[]{
 		64,  	//Up
@@ -52,10 +52,18 @@ public class CactusController : MonoBehaviour, InputIF
     private bool topLastPressed = false;
     private bool bottomLastPressed = false;
 
+    private bool[] lastKnownLEDStates = new bool[4];
+
     public InputState GameInputState { get { return inputState; } }
     public bool FarLeftPressed { get { return farLeftPressed; } }
     public bool FarRightPressed { get { return farRightPressed; } }
 
+
+    void Awake()
+    {
+        // initialize to empty input state for first frame
+        inputState = new InputState { Output = this };
+    }
 
     void Update()
     {
@@ -71,6 +79,7 @@ public class CactusController : MonoBehaviour, InputIF
     private InputState collectInput()
     {
         InputState inputState = new InputState();
+        inputState.Output = this;
 
         // read button input if connected
         int buttonVal;
@@ -234,12 +243,53 @@ public class CactusController : MonoBehaviour, InputIF
         return new Vector3(-accelCoords[1], accelCoords[2], -accelCoords[0]) / ACCEL_GRAVITATION_NORM;
     }
 
+
+    // output
+    public void SetEngineIntensity(float intensity)
+    {
+        if (stream != null && stream.IsOpen)
+        {
+            int value = Mathf.RoundToInt(Mathf.Clamp01(intensity) * 1000);
+            stream.WriteLine("m " + value);
+            string response = stream.ReadLine();
+
+            Debug.Assert(response == "Done.", "Controller didn't respond with Done, but with '" + response + "'.");
+        }
+    }
+
+    public void SetLEDState(int led, bool state)
+    {
+        if (led < 0 || led > 3)
+            throw new ArgumentException("led");
+
+        if (stream != null && stream.IsOpen)
+        {
+            // swap order because we hold the controller upside down
+            led = 3 - led;
+            // efficiency: don't send anything when LED already on
+            if (lastKnownLEDStates[led] == state)
+                return;
+
+            stream.WriteLine("l " + led + " " + (state ? "1" : "0"));
+            string response = stream.ReadLine();
+
+            Debug.Assert(response == "Done.", "Controller didn't respond with Done, but with '" + response + "'.");
+
+            lastKnownLEDStates[led] = state;
+        }
+    }
+
     void OnDestroy()
     {
         if (stream != null)
         {
             if (stream.IsOpen)
             {
+                SetEngineIntensity(0);
+                SetLEDState(0, false);
+                SetLEDState(1, false);
+                SetLEDState(2, false);
+                SetLEDState(3, false);
                 stream.Close();
             }
             stream = null;

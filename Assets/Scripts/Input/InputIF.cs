@@ -9,5 +9,5 @@ public interface InputIF
 
     /// <summary>Returns true when the player started pressing down the far right button in this frame.</summary>
     bool FarRightPressed { get; }
-
+    
 }
