@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.UI;
 
 public class SlidersKnobsChallenge : AbstractChallenge
 {
@@ -32,6 +33,15 @@ public class SlidersKnobsChallenge : AbstractChallenge
         rightSliderGoal = UnityEngine.Random.value;
         leftKnobGoal = UnityEngine.Random.value;
         rightKnobGoal = UnityEngine.Random.value;
+
+        // for testing: just show the values on the back
+        // TODO make this more interesting
+        Text backText = backGameObject.GetComponentInChildren<Text>();
+        backText.text = 
+            "LS: " + (leftSliderGoal * 100).ToString("0") + "%\n" +
+            "RS: " + (rightSliderGoal * 100).ToString("0") + "%\n" +
+            "LK: " + (leftKnobGoal * 100).ToString("0") + "%\n" + 
+            "RK: " + (rightKnobGoal * 100).ToString("0") + "%\n";
     }
 
     void Update()

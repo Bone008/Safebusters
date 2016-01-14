@@ -696,7 +696,7 @@ MonoBehaviour:
     InterconnectedDialChallengeDecoratedBack: 0
     SlidersKnobsChallengeFront: {fileID: 183958, guid: 4ea6f9a6134d8ad4aaa25e1115a8276c,
       type: 2}
-    SlidersKnobsChallengeBack: {fileID: 124302, guid: 696496b0c1aca0f4fbd192115b21b795,
+    SlidersKnobsChallengeBack: {fileID: 131036, guid: 1c499690fc1acb04fbb7d1fc34961703,
       type: 2}
     SlidersKnobsChallengeDecoratedBack: 0
     SynchronousSlidersChallengeFront: {fileID: 172906, guid: a8238a352db811c4ab225c922af71c56,
