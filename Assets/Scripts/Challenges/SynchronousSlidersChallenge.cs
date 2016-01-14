@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class SynchronousSlidersChallenge : AbstractChallenge
 {
-    private const float MAX_EPSILON = 0.1f;
+    private const float MAX_EPSILON = 0.25f;
     private const float START_EPSILON = 0.9f;
 
     private SliderController leftSliderFront;

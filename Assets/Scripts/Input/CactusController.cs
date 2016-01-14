@@ -84,6 +84,7 @@ public class CactusController : MonoBehaviour, InputIF, OutputIF
         // read button input if connected
         int buttonVal;
         stream.Write("1");
+		stream.BaseStream.Flush();
         string response = stream.ReadLine();
         buttonVal = System.Convert.ToInt32(response, 16);   //convert input hex string to actual hex int
 
@@ -92,6 +93,7 @@ public class CactusController : MonoBehaviour, InputIF, OutputIF
 
         // read analog input
         stream.Write("4");
+		stream.BaseStream.Flush();
         response = stream.ReadLine();
         int[] analogInputs = response.Split(' ').Skip(1).Select(s => Convert.ToInt32(s, 16)).ToArray();
         for (int i = 0; i < 4; i++)
@@ -227,6 +229,7 @@ public class CactusController : MonoBehaviour, InputIF, OutputIF
     private float getMicrophone()
     {
         stream.Write("s");
+		stream.BaseStream.Flush();
         string response = stream.ReadLine(); // format: "RMS: 0.000000"
         return float.Parse(response.Substring(5), CultureInfo.InvariantCulture) / 32768f;
     }
@@ -234,6 +237,7 @@ public class CactusController : MonoBehaviour, InputIF, OutputIF
     private Vector3 getAcceleration()
     {
         stream.Write("a");
+		stream.BaseStream.Flush();
         string response = stream.ReadLine();
         float[] accelCoords = response.Split(' ').Skip(1).Select(s => Convert.ToSByte(s, 16) / 128.0f).ToArray();
         // swizzle to (-y, z, -x)

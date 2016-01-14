@@ -100,7 +100,7 @@ public class InterconnectedDialChallenge : AbstractChallenge {
 				dial.GetComponent<Renderer>().material.color = originalColor;
 			}
         }
-		print (dialsInCorrectPos);
+		//print (dialsInCorrectPos);
         if (dialsInCorrectPos == 4) {
 			foreach (GameObject dial in mainDialList) {
 				dial.transform.localRotation = Quaternion.Euler(0,0,0);
