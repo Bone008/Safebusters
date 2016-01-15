@@ -44,6 +44,7 @@ public class Player : MonoBehaviour
         else
         {
             input = this.gameObject.AddComponent<HomeController>();
+            ((HomeController)input).isPlayer2 = isPlayer2;
         }
 
         // fix initially focused safe for player 2
