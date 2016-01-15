@@ -75,6 +75,10 @@ public class CactusCommsThread
             Debug.Log("Controller at " + portName + " not available: " + e.Message);
             port = null; // not available
         }
+
+        // push default snapshots at the beginning so they are never null
+        InputSnapshot = new InSnapshot { analogInputs = new float[4] };
+        OutputSnapshot = new OutSnapshot();
     }
 
     public void Start()
@@ -192,7 +196,7 @@ public class CactusCommsThread
                 bool isOn = (output.ledFlags & mask) != 0;
                 if(wasOn != isOn)
                 {
-                    port.WriteLine("l " + i + " " + (wasOn ? "1" : "0"));
+                    port.WriteLine("l " + i + " " + (isOn ? "1" : "0"));
                     port.ReadLine();
                 }
             }
