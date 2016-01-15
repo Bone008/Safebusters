@@ -35,11 +35,13 @@ public class Player : MonoBehaviour
         cameraInitialRotation = transform.rotation;
 
         // when the flag is enabled, try to connect to controller, otherwise fall back to keyboard input
-        System.IO.Ports.SerialPort connection;
-        if (useCactus && (connection = CactusController.TryConnect(port)) != null)
+        CactusCommsThread cactusThread;
+        if (useCactus && (cactusThread = new CactusCommsThread(port, Time.fixedDeltaTime)).IsConnected)
         {
+            cactusThread.Start();
+
             input = this.gameObject.AddComponent<CactusController>();
-            ((CactusController)input).stream = connection;
+            ((CactusController)input).cactusComms = cactusThread;
         }
         else
         {
