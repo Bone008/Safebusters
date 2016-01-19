@@ -20,6 +20,7 @@ public class Safe : MonoBehaviour
     public GameObject backDecorated;
     public GameObject backUndecorated;
     public Transform shutter;
+    public GameObject protectivePanel;
     [Header("Timer controls")]
     public Text timerDigit1;
     public Text timerDigit2;
@@ -49,6 +50,7 @@ public class Safe : MonoBehaviour
         {
             print(name + " is initially inactive");
             shutter.gameObject.SetActive(true);
+            protectivePanel.SetActive(true);
             shutterClosed = true;
         }
     }
@@ -237,6 +239,7 @@ public class Safe : MonoBehaviour
         Material mat = shutter.GetComponentInChildren<Renderer>().material;
         
         float passedTime = 0;
+        if (protectivePanel != null) protectivePanel.GetComponent<Animator>().SetBool("Open", true);
         while(passedTime < shutterOpenDuration)
         {
             float factor = 1 - shutterOpenCurve.Evaluate(passedTime / shutterOpenDuration);
@@ -248,11 +251,13 @@ public class Safe : MonoBehaviour
             Vector2 texScale = mat.mainTextureScale;
             texScale.y = factor;
             mat.mainTextureScale = texScale;
-
+            /*Color col = protectivePanel.GetComponent<Renderer>().material.color;
+            col = new Color(col.r,col.b,col.g,factor);
+            print(col);*/
             passedTime += Time.deltaTime;
             yield return null;
         }
-
+        protectivePanel.SetActive(false);
         shutter.gameObject.SetActive(false);
     }
 
