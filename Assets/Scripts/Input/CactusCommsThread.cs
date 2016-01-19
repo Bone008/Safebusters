@@ -5,6 +5,7 @@ using System.IO.Ports;
 using System.IO;
 using UnityEngine;
 using System.Globalization;
+using System.Collections.Generic;
 
 public class CactusCommsThread
 {
@@ -42,10 +43,12 @@ public class CactusCommsThread
     private Thread thread = null;
     private volatile bool running = false;
 
+    private LinkedList<CactusButton> __buttonPresses = new LinkedList<CactusButton>(); // has to be accessed with locks
     private InSnapshot __sharedInputSnapshot; // has to be accessed with locks
     private OutSnapshot __sharedOutputSnapshot; // has to be accessed with locks
 
     // local attributes (not accessed by other threads)
+    private CactusButton lastHeldButtons = 0;
     private float lastSentIntensity = 0;
     private int lastSentLedFlags = 0;
 
@@ -61,6 +64,7 @@ public class CactusCommsThread
         private get { lock (this) { return __sharedOutputSnapshot; } }
         set { lock (this) { __sharedOutputSnapshot = value; } }
     }
+
 
     public CactusCommsThread(string portName, float refreshInterval)
     {
@@ -80,6 +84,28 @@ public class CactusCommsThread
         InputSnapshot = new InSnapshot { analogInputs = new float[4] };
         OutputSnapshot = new OutSnapshot();
     }
+
+    public CactusButton? PollButtonPress()
+    {
+        lock (__buttonPresses)
+        {
+            if (__buttonPresses.Count == 0)
+                return null;
+
+            CactusButton btn = __buttonPresses.First.Value;
+            __buttonPresses.RemoveFirst();
+            return btn;
+        }
+    }
+
+    private void PushButtonPress(CactusButton button)
+    {
+        lock (__buttonPresses)
+        {
+            __buttonPresses.AddLast(button);
+        }
+    }
+
 
     public void Start()
     {
@@ -139,7 +165,16 @@ public class CactusCommsThread
         // read buttons
         port.Write("1");
         string response = port.ReadLine();
+        // held
         input.heldButtons = (CactusButton)int.Parse(response, NumberStyles.HexNumber);
+
+        // pressed ^= now held but not during the previous sample
+        CactusButton newPresses = input.heldButtons & ~lastHeldButtons;
+        foreach (CactusButton btn in Enum.GetValues(typeof(CactusButton)))
+            if ((newPresses & btn) != 0) PushButtonPress(btn);
+
+        lastHeldButtons = input.heldButtons;
+
 
         // read analog
         port.Write("4");
@@ -173,7 +208,7 @@ public class CactusCommsThread
     {
         // engine
         // only update when a notable difference from previous value
-        if(Mathf.Abs(output.engineIntensity - lastSentIntensity) > 0.01f || output.engineIntensity == 0)
+        if (Mathf.Abs(output.engineIntensity - lastSentIntensity) > 0.01f || output.engineIntensity == 0)
         {
             int value = Mathf.RoundToInt(Mathf.Clamp01(output.engineIntensity) * 1000);
             port.WriteLine("m " + value);
@@ -184,7 +219,7 @@ public class CactusCommsThread
 
         // LEDs
         output.ledFlags &= 0xf; // only use lowest 4 bits
-        if(lastSentLedFlags != output.ledFlags)
+        if (lastSentLedFlags != output.ledFlags)
         {
             for (int i = 0; i < 4; i++)
             {
@@ -194,7 +229,7 @@ public class CactusCommsThread
                 // efficiency: don't send anything when already in correct state
                 bool wasOn = (lastSentLedFlags & mask) != 0;
                 bool isOn = (output.ledFlags & mask) != 0;
-                if(wasOn != isOn)
+                if (wasOn != isOn)
                 {
                     port.WriteLine("l " + i + " " + (isOn ? "1" : "0"));
                     port.ReadLine();
