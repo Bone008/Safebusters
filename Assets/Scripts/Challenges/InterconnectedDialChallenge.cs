@@ -61,7 +61,15 @@ public class InterconnectedDialChallenge : AbstractChallenge {
             return;
 
         GameButton pressed = frontInputState.PressedButtons;    //We need this so we can switch between dials
-        float knobRotation = frontInputState.GetAnalogInput(0);    //We need this so we can rotate the dials (obviously)
+        float knobPosition = frontInputState.GetAnalogInput(0);    //We need this so we can rotate the dials (obviously)
+
+        float knobRotation = (knobPosition - 0.5f);
+        // if the knob is close to the center, treat as neutral input
+        if (Mathf.Abs(knobRotation) < 0.05f)
+            knobRotation = 0;
+        else
+            knobRotation *= 90 * Time.deltaTime;
+
 
         if (pressed == GameButton.Left) {
             currentlySelectedDial = (currentlySelectedDial + mainDialList.Count - 1) % mainDialList.Count; //+ mDL.count ,so we dont go into negative
