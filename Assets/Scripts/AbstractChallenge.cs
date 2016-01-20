@@ -10,8 +10,8 @@ public abstract class AbstractChallenge : MonoBehaviour
     protected InputState frontInputState = new InputState();
     protected InputState backInputState = new InputState();
 
-    protected bool hasFocusFront = true;
-    protected bool hasFocusBack = true;
+    protected bool hasFocusFront = false;
+    protected bool hasFocusBack = false;
 
     protected Safe safe;
 

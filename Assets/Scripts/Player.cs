@@ -50,6 +50,8 @@ public class Player : MonoBehaviour
         // fix initially focused safe for player 2
         if (isPlayer2)
             focusedSafe = level.generationOptions.safesPerRow - 1;
+
+        level.safes[focusedSafe].SetFocus(isPlayer2, true);
     }
 
     void Update()
