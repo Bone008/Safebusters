@@ -50,7 +50,7 @@ public class HomeController : MonoBehaviour, InputIF, OutputIF
 		rightKnobValue = GUI.HorizontalSlider (new Rect (offsetHorizontal + 50, 5, 40, 15), rightKnobValue, 0.0f, 1.0f);
 
 		// top-right corner: microphone
-		microphoneValue = GUI.VerticalSlider (new Rect (Screen.width - offsetHorizontal - 20, 5, 15, 100), microphoneValue, 1.0f, 0.0f);
+		microphoneValue = GUI.VerticalSlider (new Rect (Screen.width / 2 + offsetHorizontal - 20, 5, 15, 100), microphoneValue, 1.0f, 0.0f);
 
 		// bottom-left corner: accelerometer
 		accelerometerValue.x = GUI.VerticalSlider (new Rect (offsetHorizontal + 5, Screen.height - 105, 15, 100), accelerometerValue.x, 1.0f, -1.0f);
