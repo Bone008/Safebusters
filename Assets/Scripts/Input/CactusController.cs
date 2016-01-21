@@ -27,13 +27,12 @@ public class CactusController : MonoBehaviour, InputIF, OutputIF
     void Awake()
     {
         // initialize to empty input state for first frame
-        inputState = new InputState { Output = this };
+        inputState = new InputState(this);
     }
 
     void Update()
     {
-        inputState = new InputState();
-        inputState.Output = this;
+        inputState = new InputState(this);
 
         // pressed buttons
         farLeftPressed = farRightPressed = false;
@@ -90,10 +89,7 @@ public class CactusController : MonoBehaviour, InputIF, OutputIF
     // output
     public void SetEngineIntensity(float intensity)
     {
-        if (intensity < 0 || intensity > 1)
-            throw new ArgumentOutOfRangeException("intensity", "intensity has to be between 0.0 and 1.0");
-
-        outState.engineIntensity = intensity;
+        outState.engineIntensity = Mathf.Clamp01(intensity);
     }
 
     public void SetLEDState(int led, bool state)

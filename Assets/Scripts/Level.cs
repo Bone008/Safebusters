@@ -17,7 +17,7 @@ public class Level : MonoBehaviour
     [HideInInspector]
     public List<Safe> safes;
 
-    void Start()
+    void Awake()
     {
         GenerateLevel();
     }
