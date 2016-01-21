@@ -113,6 +113,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &120132
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 492564}
+  m_Layer: 0
+  m_Name: safeContent
+  m_TagString: Untagged
+  m_Icon: {fileID: -3114416830163030229, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &127976
 GameObject:
   m_ObjectHideFlags: 1
@@ -288,6 +303,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 470046}
   - 114: {fileID: 11498500}
+  - 82: {fileID: 8230388}
   m_Layer: 0
   m_Name: Safe
   m_TagString: Untagged
@@ -622,7 +638,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 179976}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.57460165, y: 4.357, z: -0.11543241}
+  m_LocalPosition: {x: 0, y: 10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 445720}
@@ -631,6 +647,7 @@ Transform:
   - {fileID: 436518}
   - {fileID: 489680}
   - {fileID: 437284}
+  - {fileID: 492564}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!4 &478696
@@ -693,6 +710,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 437284}
   m_RootOrder: 3
+--- !u!4 &492564
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 120132}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.2133, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 470046}
+  m_RootOrder: 6
 --- !u!4 &497798
 Transform:
   m_ObjectHideFlags: 1
@@ -1201,6 +1230,80 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 186376}
   m_Mesh: {fileID: 4300010, guid: 7d47c6ab9039fbb4386c4bfad712f768, type: 3}
+--- !u!82 &8230388
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 179976}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!95 &9599986
 Animator:
   serializedVersion: 3
@@ -1422,6 +1525,8 @@ MonoBehaviour:
   timerDigit1: {fileID: 11420650}
   timerDigit2: {fileID: 11409200}
   timerDot: {fileID: 11444362}
+  wonSound: {fileID: 8300000, guid: 68f1349d15f855c41872030b50594284, type: 3}
+  lostSound: {fileID: 8300000, guid: 2d351fe3b8c68d040a1dc0d59ada2176, type: 3}
   challenge: {fileID: 0}
 --- !u!222 &22225022
 CanvasRenderer:
@@ -1613,6 +1718,26 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: panLevelCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: reverbZoneMixCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: wonSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 68f1349d15f855c41872030b50594284, type: 3}
+    - target: {fileID: 0}
+      propertyPath: lostSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 2d351fe3b8c68d040a1dc0d59ada2176, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 179976}

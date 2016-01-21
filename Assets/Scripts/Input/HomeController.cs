@@ -139,16 +139,16 @@ public class HomeController : MonoBehaviour, InputIF, OutputIF
         return flags;
     }
 
-    public void SetEngineIntensity(float intensity)
+    public void SetEngineIntensity(float intensity) //Commented out the print because it might cause lag
     {
-        print("Engine: " + intensity);
+        //print("Engine: " + intensity);
         // nop
     }
 
-    public void SetLEDState(int led, bool state)
+    public void SetLEDState(int led, bool state) //Commented out the print because it might cause lag
     {
         // nop
-        print("LED #" + led + ": " + state);
+        //print("LED #" + led + ": " + state);
     }
 
 }

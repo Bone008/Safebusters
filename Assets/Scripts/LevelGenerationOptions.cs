@@ -11,6 +11,8 @@ public class LevelGenerationOptions
     public int safesPerRow = 3;
     public int safesActiveAtStart = 5;  //Amount of active safes at start
     public bool activateRandomly = false;
+    public int maxLives = 3;
+    public float punishmentDuration = 10.0f; //Duration of a punishment if we lose a life
 
     public Color[] colorGroups;
     public Type[] availableChallenges = { 

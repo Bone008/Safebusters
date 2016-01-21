@@ -26,6 +26,9 @@ public class Safe : MonoBehaviour
     public Text timerDigit2;
     public Text timerDot;
 
+    public AudioClip wonSound;
+    public AudioClip lostSound;
+
     [HideInInspector]
     public AbstractChallenge challenge;
 
@@ -39,12 +42,14 @@ public class Safe : MonoBehaviour
     private bool active = true;
     private float remainingTime;
     private bool open = false;
+    Level lvl;
 
     public bool IsActive { get { return active; } }
     public bool IsOpen { get { return open; } }
 
     void Start()
     {
+        lvl = GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>(); 
         // initially show the shutter when we are started in inactive state
         if (!active)
         {
@@ -64,9 +69,12 @@ public class Safe : MonoBehaviour
 
             if (remainingTime < 0)
                 // TODO lose game; for now just reset to max value (easier testing when you're not constantly losing ...)
-                remainingTime = maxTimer;
-
+                //remainingTime = maxTimer;
+                FailChallenge();
             UpdateTimerText();
+
+            //Only for debugging!
+            if (Input.GetKeyUp(KeyCode.L)) FailChallenge();
         }
     }
 
@@ -82,6 +90,7 @@ public class Safe : MonoBehaviour
     public void SolveChallenge()
     {
         Debug.Log("challenge solved!");
+        GetComponent<AudioSource>().PlayOneShot(wonSound);
         // open door
         //doorAnchor.localRotation = Quaternion.Euler(0, -90, 0);
         StartCoroutine(AnimateRotateSafeDoor());
@@ -91,12 +100,19 @@ public class Safe : MonoBehaviour
         challenge.enabled = false;
 
         //Activating new safes of same coloring
-        Level lvl = GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>();   //didn't want to add another variable at the top, so I'm using a tag
         lvl.ActivateNewSafes(displayColor, numberOfSafesToActivate);
     }
     public void FailChallenge()
     {
-        Debug.Log("lost a life!");
+        GetComponent<AudioSource>().PlayOneShot(lostSound);
+        if (lvl.currentLiveCount > 0)
+        { //We still have tries left
+            StartCoroutine(ActivateNeuroToxin());
+            lvl.currentLiveCount--;
+        }
+        else { 
+        }
+        remainingTime = maxTimer;
     }
 
     public void SpawnChallengeObjects(GameObject frontPrefab, GameObject backPrefab, bool decoratedBack)
@@ -232,6 +248,75 @@ public class Safe : MonoBehaviour
 
         // set to inactive
         SetActive(false);
+    }
+
+    private IEnumerator ActivateNeuroToxin() {
+        float passedTime = 0;
+        bool finishedActivating = false;
+        UnityStandardAssets.ImageEffects.Fisheye fish1 = lvl.Player1Cam.GetComponent<UnityStandardAssets.ImageEffects.Fisheye>();
+        UnityStandardAssets.ImageEffects.Fisheye fish2 = lvl.Player2Cam.GetComponent<UnityStandardAssets.ImageEffects.Fisheye>();
+        UnityStandardAssets.ImageEffects.Blur blur1 = lvl.Player1Cam.GetComponent<UnityStandardAssets.ImageEffects.Blur>();
+        UnityStandardAssets.ImageEffects.Blur blur2 = lvl.Player2Cam.GetComponent<UnityStandardAssets.ImageEffects.Blur>();
+
+        lvl.neuroToxinParticleSystem[0].SetActive(true);
+        lvl.neuroToxinParticleSystem[1].SetActive(true);
+        fish1.enabled = true;
+        fish2.enabled = true;
+        blur1.enabled = true;
+        blur2.enabled = true;
+        float translationSpeed = 0.2f;
+        Color pColor = lvl.neuroToxinParticleSystem[0].GetComponent<ParticleSystem>().startColor;
+        lvl.neuroToxinParticleSystem[0].GetComponent<ParticleSystem>().Play();
+        lvl.neuroToxinParticleSystem[1].GetComponent<ParticleSystem>().Play();
+
+        while(passedTime < lvl.generationOptions.punishmentDuration && !finishedActivating){
+            blur1.iterations = 1;
+            blur2.iterations = 1;
+
+            if (fish1.strengthX < 0.3) {    //Since we literally raising the same level in both fisheyes, we are testing for just one of them
+                fish1.strengthX += Time.deltaTime*translationSpeed;
+                fish1.strengthY += Time.deltaTime * translationSpeed;
+                fish2.strengthX += Time.deltaTime * translationSpeed;
+                fish2.strengthY += Time.deltaTime * translationSpeed;
+            }
+            if(lvl.neuroToxinParticleSystem[0].GetComponent<ParticleSystem>().startColor.a < 1){
+                pColor.a += Time.deltaTime*translationSpeed;
+                lvl.neuroToxinParticleSystem[0].GetComponent<ParticleSystem>().startColor = pColor;
+                lvl.neuroToxinParticleSystem[1].GetComponent<ParticleSystem>().startColor = pColor;
+            }
+            passedTime += Time.deltaTime;
+            yield return null;
+        }
+        finishedActivating = true;
+        while(passedTime > 0 && finishedActivating){
+
+            blur1.iterations = 0;
+            blur2.iterations = 0;
+
+            if (fish1.strengthX > 0.0)
+            {    //Since we literally raising the same level in both fisheyes, we are testing for just one of them
+                fish1.strengthX -= Time.deltaTime * translationSpeed;
+                fish1.strengthY -= Time.deltaTime * translationSpeed;
+                fish2.strengthX -= Time.deltaTime * translationSpeed;
+                fish2.strengthY -= Time.deltaTime * translationSpeed;
+                yield return null;
+            }
+            if (lvl.neuroToxinParticleSystem[0].GetComponent<ParticleSystem>().startColor.a > 0)
+            {
+                pColor.a -= Time.deltaTime*translationSpeed;
+                lvl.neuroToxinParticleSystem[0].GetComponent<ParticleSystem>().startColor = pColor;
+                lvl.neuroToxinParticleSystem[1].GetComponent<ParticleSystem>().startColor = pColor;
+            }
+            passedTime -= Time.deltaTime;
+        }
+        fish1.enabled = false;
+        fish2.enabled = false;
+        blur1.enabled = false;
+        blur2.enabled = false;
+        lvl.neuroToxinParticleSystem[0].GetComponent<ParticleSystem>().Stop();
+        lvl.neuroToxinParticleSystem[0].SetActive(false);
+        lvl.neuroToxinParticleSystem[1].GetComponent<ParticleSystem>().Stop();
+        lvl.neuroToxinParticleSystem[1].SetActive(false);
     }
 
     private IEnumerator AnimateOpenShutter()

@@ -13,12 +13,20 @@ public class Level : MonoBehaviour
     public GameObject safePrefab;
     public LevelGenerationOptions generationOptions = new LevelGenerationOptions();
     public LevelChallengePrefabs challengePrefabs = new LevelChallengePrefabs();
+    
+    public GameObject Player1Cam;
+    public GameObject Player2Cam;
+    public GameObject[] neuroToxinParticleSystem;
+    public GameObject[] safeContentPrefabs;
 
     [HideInInspector]
     public List<Safe> safes;
+    [HideInInspector]
+    public int currentLiveCount;
 
     void Awake()
     {
+        currentLiveCount = generationOptions.maxLives;
         GenerateLevel();
     }
 
@@ -47,6 +55,9 @@ public class Level : MonoBehaviour
             // offset from top left position
             offset = new Vector3(safeWidth * (i % generationOptions.safesPerRow), -safeHeight * (int)(i / generationOptions.safesPerRow), 0);
             go.transform.localPosition = baseOffset + offset;
+
+            //spawn in a content for the safe
+            GameObject.Instantiate(safeContentPrefabs[UnityEngine.Random.Range(0,safeContentPrefabs.Length)], go.transform.FindChild("safeContent").position,go.transform.FindChild("safeContent").rotation);
 
 			// choose challenge
             Type challengeType = generationOptions.availableChallenges[UnityEngine.Random.Range(0, generationOptions.availableChallenges.Length)];
