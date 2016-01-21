@@ -1866,6 +1866,37 @@ MonoBehaviour:
   safeContentPrefabs:
   - {fileID: 175472, guid: a32e7e6aef9a1d549a3da17652cf4082, type: 2}
   - {fileID: 158752, guid: 5143decd620518f4fa200be917b1b4f8, type: 2}
+
+  iconSprites:
+  - {fileID: 21300000, guid: d68459442f9c32847aa4f9470727706b, type: 3}
+  - {fileID: 21300000, guid: 4f3c3cebd186b90428d8b75dfa70414b, type: 3}
+  - {fileID: 21300000, guid: 9b4f825f640386d4eba97bebbcc66a8f, type: 3}
+  - {fileID: 21300000, guid: c2cf6046e71467d4fa715b44d6807ba0, type: 3}
+  - {fileID: 21300000, guid: 047d2733762299146b49b3e0415122cf, type: 3}
+  - {fileID: 21300000, guid: a59544eb3ea71d24094f4617d355a3e3, type: 3}
+  - {fileID: 21300000, guid: 8d3bfdc06d9f714479141861fdc7593b, type: 3}
+  - {fileID: 21300000, guid: 6da378aaf4e6fb646b885a331ed18f0c, type: 3}
+  - {fileID: 21300000, guid: 17dcd1477a3acd54797510bdef6641ca, type: 3}
+  - {fileID: 21300000, guid: df5f01d20b9066141aed2b64760b6bfd, type: 3}
+  - {fileID: 21300000, guid: 915080c4ed5e3194a91cf96fb92b321d, type: 3}
+  - {fileID: 21300000, guid: 62074df57d61f5840a61c0d976111985, type: 3}
+  - {fileID: 21300000, guid: d05f2913ad05b444eac513d2d6d13e6f, type: 3}
+  - {fileID: 21300000, guid: 4fa9d40eae7f042419f5325231a15622, type: 3}
+  iconSpriteRotations:
+  - -90
+  - 90
+  - -90
+  - -90
+  - 90
+  - 180
+  - -90
+  - 90
+  - 90
+  - 0
+  - 180
+  - 90
+  - 0
+  - 0
   safes: []
   currentLiveCount: 0
 --- !u!4 &1417575769

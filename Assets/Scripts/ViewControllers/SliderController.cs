@@ -7,7 +7,7 @@ public class SliderController : MonoBehaviour
     public Renderer barRenderer;
     public Transform handle;
 
-    void Start()
+    void Awake()
     {
         SetValue(0);
     }

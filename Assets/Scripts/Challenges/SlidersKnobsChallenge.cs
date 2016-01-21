@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using System.Linq;
 using System.Collections;
 using System;
-using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class SlidersKnobsChallenge : AbstractChallenge
 {
@@ -28,20 +30,42 @@ public class SlidersKnobsChallenge : AbstractChallenge
         leftKnob = knobs[0];
         rightKnob = knobs[1];
 
-        // Challenge
-        leftSliderGoal = UnityEngine.Random.value;
-        rightSliderGoal = UnityEngine.Random.value;
-        leftKnobGoal = UnityEngine.Random.value;
-        rightKnobGoal = UnityEngine.Random.value;
 
-        // for testing: just show the values on the back
-        // TODO make this more interesting
-        Text backText = backGameObject.GetComponentInChildren<Text>();
-        backText.text = 
-            "LS: " + (leftSliderGoal * 100).ToString("0") + "%\n" +
-            "RS: " + (rightSliderGoal * 100).ToString("0") + "%\n" +
-            "LK: " + (leftKnobGoal * 100).ToString("0") + "%\n" + 
-            "RK: " + (rightKnobGoal * 100).ToString("0") + "%\n";
+        IconSliderController[] iconDisplaysOnBack = backGameObject.GetComponentsInChildren<IconSliderController>();
+        List<Sprite> sprites = GameObject.FindWithTag("GameController").GetComponent<Level>().iconSprites.ToList();
+        List<float> spriteRotations = GameObject.FindWithTag("GameController").GetComponent<Level>().iconSpriteRotations.ToList();
+
+        if (iconDisplaysOnBack.Length > sprites.Count)
+        {
+            Debug.LogError("You need to configure at least enough icons (" + iconDisplaysOnBack.Length + ") to fill all columns on the back of sliders&knobs!");
+            return;
+        }
+
+        foreach (var icon in iconDisplaysOnBack)
+        {
+            // set each column to a random icon and position
+            int i = UnityEngine.Random.Range(0, sprites.Count);
+            icon.SetIcon(sprites[i], spriteRotations[i]);
+            icon.SetValue(UnityEngine.Random.value);
+
+            sprites.RemoveAt(i);
+            spriteRotations.RemoveAt(i);
+        }
+
+        // pick 4 random icons from the back and use their values for the challenge
+        var selectedIcons = iconDisplaysOnBack.OrderBy(_ => UnityEngine.Random.value).Take(4).ToList();
+        leftSliderGoal = selectedIcons[0].GetValue();
+        rightSliderGoal = selectedIcons[1].GetValue();
+        leftKnobGoal = selectedIcons[2].GetValue();
+        rightKnobGoal = selectedIcons[3].GetValue();
+
+        // update the icons on the front to display the chosen icons
+        Transform frontCanvas = frontGameObject.GetComponentInChildren<Canvas>().transform;
+        for(int i=0; i<4; i++)
+        {
+            frontCanvas.GetChild(i).localRotation = selectedIcons[i].handle.localRotation;
+            frontCanvas.GetChild(i).GetChild(0).GetComponent<Image>().sprite = selectedIcons[i].handleIcon.sprite;
+        }
     }
 
     void Update()
@@ -62,7 +86,7 @@ public class SlidersKnobsChallenge : AbstractChallenge
         rightKnob.SetValue(rk);
 
         // Check if goal is reached (simple)
-        if((Math.Abs(ls - leftSliderGoal) <= EPSILON)
+        if ((Math.Abs(ls - leftSliderGoal) <= EPSILON)
             && (Math.Abs(rs - rightSliderGoal) <= EPSILON)
             && (Math.Abs(lk - leftKnobGoal) <= EPSILON)
             && (Math.Abs(rk - rightKnobGoal) <= EPSILON))

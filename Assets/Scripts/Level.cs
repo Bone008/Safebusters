@@ -18,6 +18,9 @@ public class Level : MonoBehaviour
     public GameObject Player2Cam;
     public GameObject[] neuroToxinParticleSystem;
     public GameObject[] safeContentPrefabs;
+    
+    public Sprite[] iconSprites = new Sprite[0];
+    public float[] iconSpriteRotations = new float[0];
 
     [HideInInspector]
     public List<Safe> safes;
@@ -26,6 +29,12 @@ public class Level : MonoBehaviour
 
     void Awake()
     {
+        if(iconSprites.Length != iconSpriteRotations.Length)
+        {
+            Debug.LogError("Config error: Icon Sprites and Icon Sprite Rotations have to be the same length!");
+            return;
+        }
+
         currentLiveCount = generationOptions.maxLives;
         GenerateLevel();
     }
