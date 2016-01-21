@@ -6,9 +6,32 @@ public class InputState
 	public GameButton HeldButtons { get; set; }
     public GameButton PressedButtons { get; set; }
     public Vector3 Acceleration { get; set; }
-    public OutputIF Output { get; set; }
+    public OutputIF Output { get; private set; }
 
-	private float[] analogInputs = new float[5];
+    private float[] analogInputs = new float[5];
+
+    public InputState(OutputIF output)
+    {
+        Output = output;
+        // initially set to no output
+        if (output != null)
+        {
+            output.SetEngineIntensity(0);
+            output.SetLEDState(0, false);
+            output.SetLEDState(1, false);
+            output.SetLEDState(2, false);
+            output.SetLEDState(3, false);
+        }
+
+        // set everything to no input
+        HeldButtons = GameButton.None;
+        PressedButtons = GameButton.None;
+        Acceleration = Vector3.zero;
+        for (int i = 0; i < analogInputs.Length; i++)
+        {
+            analogInputs[i] = 0.0f;
+        }
+    }
 
     public float GetAnalogInput(GameAnalogInput type)
     {
@@ -27,16 +50,6 @@ public class InputState
 			count++;
 		}
 		return count;
-	}
-
-	public InputState(){
-		// set everything to no input
-		HeldButtons = GameButton.None;
-		PressedButtons = GameButton.None;
-		Acceleration = Vector3.zero;
-		for (int i = 0; i < analogInputs.Length; i++) {
-			analogInputs [i] = 0.0f;
-		}
 	}
 
 }

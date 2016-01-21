@@ -7,8 +7,8 @@ public abstract class AbstractChallenge : MonoBehaviour
     public GameObject frontGameObject;
     public GameObject backGameObject;
 
-    protected InputState frontInputState = new InputState();
-    protected InputState backInputState = new InputState();
+    protected InputState frontInputState = new InputState(null);
+    protected InputState backInputState = new InputState(null);
 
     protected bool hasFocusFront = false;
     protected bool hasFocusBack = false;

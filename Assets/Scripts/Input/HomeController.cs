@@ -26,7 +26,7 @@ public class HomeController : MonoBehaviour, InputIF, OutputIF
     void Awake()
     {
         // initialize to empty input state for first frame
-        inputState = new InputState { Output = this };
+        inputState = new InputState(this);
     }
 
     void Update()
@@ -60,8 +60,7 @@ public class HomeController : MonoBehaviour, InputIF, OutputIF
 
     private InputState collectInput()
     {
-        InputState inputState = new InputState();
-        inputState.Output = this;
+        InputState inputState = new InputState(this);
 
         inputState.HeldButtons = checkButtonsHeld();
         inputState.PressedButtons = checkButtonsPressed();

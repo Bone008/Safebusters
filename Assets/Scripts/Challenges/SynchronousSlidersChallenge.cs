@@ -7,6 +7,9 @@ public class SynchronousSlidersChallenge : AbstractChallenge
 {
     private const float MAX_EPSILON = 0.25f;
     private const float START_EPSILON = 0.9f;
+    private const float GOAL_EPSILON = 0.08f;
+
+    private enum StartedStatus { WaitForFocus, Init, Discharge }
 
     private SliderController leftSliderFront;
     private SliderController rightSliderFront;
@@ -18,7 +21,7 @@ public class SynchronousSlidersChallenge : AbstractChallenge
     private RectTransform statusArrowBack;
     private Text statusTextBack;
 
-    private bool hasStarted = false; // Wait, until both players set their sliders to 1, then start judging
+    private StartedStatus status = StartedStatus.WaitForFocus; // Wait until both players have focus and set their sliders to 1, then start judging
 
     protected override void InitChallenge()
     {
@@ -36,17 +39,14 @@ public class SynchronousSlidersChallenge : AbstractChallenge
         rightSliderBack = sliders[1];
         statusArrowBack = backGameObject.transform.Find("Canvas/Arrow").GetComponent<RectTransform>();
         statusTextBack = backGameObject.transform.Find("Canvas/Status").GetComponent<Text>();
+
+        // set status display to proper values
+        SetStatus(StartedStatus.WaitForFocus);
     }
 
     void Update()
     {
-        // Sync-Challenge -> Both focus required
-        if (!hasFocusFront || !hasFocusBack)
-        {
-            SetStarted(false);
-            return;
-        }
-
+        // always update the slider positions when in focus (better UX)
         // Get Input
         float lsf, rsf, lsb, rsb;
         lsf = frontInputState.GetAnalogInput(GameAnalogInput.LeftSlider);
@@ -55,49 +55,99 @@ public class SynchronousSlidersChallenge : AbstractChallenge
         rsb = backInputState.GetAnalogInput(GameAnalogInput.RightSlider);
 
         // Update GUI
-        leftSliderFront.SetValue(lsf);
-        rightSliderFront.SetValue(rsf);
-        leftSliderBack.SetValue(lsb);
-        rightSliderBack.SetValue(rsb);
-
-        // Check if started
-        if(lsf >= START_EPSILON && rsf >= START_EPSILON && lsb >= START_EPSILON && rsb >= START_EPSILON)
+        if (hasFocusFront)
         {
-            SetStarted(true);
+            leftSliderFront.SetValue(lsf);
+            rightSliderFront.SetValue(rsf);
+        }
+        if (hasFocusBack)
+        {
+            leftSliderBack.SetValue(lsb);
+            rightSliderBack.SetValue(rsb);
         }
 
-        // Abort here if not started
-        if (!hasStarted)
+
+        // === challenge logic ===
+
+        if (status == StartedStatus.WaitForFocus)
+        {
+            // do both player have focus now?
+            if (hasFocusFront && hasFocusBack)
+                SetStatus(StartedStatus.Init);
+            else
+                return;
+        }
+        // did a player lose focus?
+        else if (!hasFocusFront || !hasFocusBack)
+        {
+            SetStatus(StartedStatus.WaitForFocus);
             return;
+        }
+
+
+        // when initializing: check for start condition
+        if (status == StartedStatus.Init)
+        {
+            // both sliders are up --> start discharge
+            if (lsf >= START_EPSILON && rsf >= START_EPSILON && lsb >= START_EPSILON && rsb >= START_EPSILON)
+                SetStatus(StartedStatus.Discharge);
+        }
+
 
         // Check if solved
-        if(lsf <= MAX_EPSILON && rsf <= MAX_EPSILON && lsb <= MAX_EPSILON && rsb <= MAX_EPSILON)
+        else if (lsf <= GOAL_EPSILON && rsf <= GOAL_EPSILON && lsb <= GOAL_EPSILON && rsb <= GOAL_EPSILON)
         {
             safe.SolveChallenge();
         }
         // Check if failed (simple) (distance between corresponding sliders >= max epsilon)
-        else if((Math.Abs(lsf - lsb) >= MAX_EPSILON) || (Math.Abs(rsf - rsb) >= MAX_EPSILON))
+        else if ((Math.Abs(lsf - lsb) >= MAX_EPSILON) || (Math.Abs(rsf - rsb) >= MAX_EPSILON))
         {
-            SetStarted(false);
+            SetStatus(StartedStatus.Init);
             safe.FailChallenge();
-        }
-        
-        frontInputState.Output.SetEngineIntensity(Mathf.Max(Mathf.Abs(lsf - lsb), Mathf.Abs(rsf - rsb)));
-        backInputState.Output.SetEngineIntensity(Mathf.Max(Mathf.Abs(lsf - lsb), Mathf.Abs(rsf - rsb)));
-    }
-
-    public void SetStarted(bool flag)
-    {
-        hasStarted = flag;
-        if(flag)
-        {
-            statusArrowFront.localRotation = statusArrowBack.localRotation = Quaternion.Euler(0, 0, 270);
-            statusTextFront.text = statusTextBack.text = "DISCHARGE";
         }
         else
         {
-            statusArrowFront.localRotation = statusArrowBack.localRotation = Quaternion.Euler(0, 0, 90);
-            statusTextFront.text = statusTextBack.text = "INIT";
+            float failIntensity = Mathf.Max(Mathf.Abs(lsf - lsb), Mathf.Abs(rsf - rsb)) / MAX_EPSILON;
+
+            // set LEDs to indicate how close you are to failing
+            // between 1 and 4 LEDs should be on while discharging
+            for (int i = 0; i < 4; i++)
+            {
+                frontInputState.Output.SetLEDState(i, (failIntensity > 0.27f * i));
+                backInputState.Output.SetLEDState(i, (failIntensity > 0.27f * i));
+            }
+
+            // same with engine
+            frontInputState.Output.SetEngineIntensity(failIntensity);
+            backInputState.Output.SetEngineIntensity(failIntensity);
+        }
+    }
+
+    private void SetStatus(StartedStatus status)
+    {
+        this.status = status;
+
+        switch (status)
+        {
+            case StartedStatus.WaitForFocus:
+                statusArrowFront.gameObject.SetActive(false);
+                statusArrowBack.gameObject.SetActive(false);
+                statusTextFront.text = statusTextBack.text = "WAIT";
+                break;
+
+            case StartedStatus.Init:
+                statusArrowFront.gameObject.SetActive(true);
+                statusArrowBack.gameObject.SetActive(true);
+                statusArrowFront.localRotation = statusArrowBack.localRotation = Quaternion.Euler(0, 0, 90);
+                statusTextFront.text = statusTextBack.text = "INIT";
+                break;
+
+            case StartedStatus.Discharge:
+                statusArrowFront.gameObject.SetActive(true);
+                statusArrowBack.gameObject.SetActive(true);
+                statusArrowFront.localRotation = statusArrowBack.localRotation = Quaternion.Euler(0, 0, 270);
+                statusTextFront.text = statusTextBack.text = "DISCHARGE";
+                break;
         }
     }
 

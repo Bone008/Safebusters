@@ -68,7 +68,7 @@ public class InterconnectedDialChallenge : AbstractChallenge {
         if (Mathf.Abs(knobRotation) < 0.05f)
             knobRotation = 0;
         else
-            knobRotation *= 90 * Time.deltaTime;
+            knobRotation *= 150 * Time.deltaTime;
 
 
         if (pressed == GameButton.Left) {
