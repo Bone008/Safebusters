@@ -18,7 +18,8 @@ public class LevelGenerationOptions
 		typeof(ButtonSequenceChallenge),
         typeof(InterconnectedDialChallenge),
 		typeof(SlidersKnobsChallenge),
-        typeof(SynchronousSlidersChallenge)
+        typeof(SynchronousSlidersChallenge),
+		typeof(AccelerometerChallenge)
 	};
 
     // will be extended with additional parameters and logic later

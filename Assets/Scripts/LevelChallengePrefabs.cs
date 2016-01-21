@@ -39,6 +39,11 @@ public class LevelChallengePrefabs
     public GameObject SynchronousSlidersChallengeBack;
     public bool SynchronousSlidersChallengeDecoratedBack;
 
+	[Header("Accelerometer Challenge")]
+	public GameObject AccelerometerChallengeFront;
+	public GameObject AccelerometerChallengeBack;
+	public bool AccelerometerChallengeDecoratedBack;
+
     public GameObject GetFrontPrefab(Type challengeType)
     {
         FieldInfo field = typeof(LevelChallengePrefabs).GetField(challengeType.Name + "Front");
