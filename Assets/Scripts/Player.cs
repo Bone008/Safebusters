@@ -34,7 +34,14 @@ public class Player : MonoBehaviour
     {
         cameraInitialRotation = transform.rotation;
 
-        // when the flag is enabled, try to connect to controller, otherwise fall back to keyboard input
+		// if port is set in main menu: overwrite editor settings
+		string _port = PlayerPrefs.GetString ("Player" + ((isPlayer2) ? "2" : "1") + "Port", "");
+		if (_port != "") {
+			useCactus = (_port != "Keyboard");
+			port = _port;
+		}
+
+		// when the flag is enabled, try to connect to controller, otherwise fall back to keyboard input
         CactusCommsThread cactusThread;
         if (useCactus && (cactusThread = new CactusCommsThread(port, Time.fixedDeltaTime)).IsConnected)
         {
