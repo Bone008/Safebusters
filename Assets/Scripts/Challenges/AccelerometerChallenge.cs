@@ -4,7 +4,7 @@ using System.Collections;
 
 public class AccelerometerChallenge : AbstractChallenge {
 
-	private const float ACCEL_SCALING = 0.75f;
+	private const float ACCEL_SCALING_X = 0.75f;
 
 	private AccelPosController accelPosIndicator;
 
@@ -14,26 +14,21 @@ public class AccelerometerChallenge : AbstractChallenge {
 	
 	void Update () {
 		//Debug.Log ("Accel: "+frontInputState.Acceleration.ToString());
+		Vector3 accel = frontInputState.Acceleration.normalized;
+		Vector2 movement = new Vector2(accel.x, accel.z);
 
-		Vector2 movement = new Vector2(frontInputState.Acceleration.x, frontInputState.Acceleration.z);
 		float width = safe.GetUsableFrontWidth ();
 		float height = safe.GetUsableFrontHeight ();
 
-		//Debug.Log ("Width: " + width + " Height: " + height);
-		//TODO: normalisieren
-		movement.x *= Math.Abs (width);
+		movement.x *= Math.Abs (width) * ACCEL_SCALING_X;
 		movement.y *= Math.Abs (height);
-
-		movement.x *= ACCEL_SCALING;
-		movement.y *= ACCEL_SCALING;
 
 		movement.x += width / 2;
 		movement.y += height / 2;
 
-		movement.x = Mathf.Clamp (movement.x, width, 0.0f);
-		movement.y = Mathf.Clamp (movement.y, height, 0.0f);
+		movement.x = Mathf.Clamp (movement.x, width + 0.05f, -0.05f);
+		movement.y = Mathf.Clamp (movement.y, height + 0.05f, -0.05f);
 
-		//Debug.Log ("Movement: " + movement.ToString ());
 		accelPosIndicator.SetValue(movement);
 	}
 }

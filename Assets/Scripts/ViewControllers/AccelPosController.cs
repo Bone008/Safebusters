@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 public class AccelPosController : MonoBehaviour {
@@ -7,6 +8,6 @@ public class AccelPosController : MonoBehaviour {
 
 	public void SetValue(Vector2 pos)
 	{
-		handle.localPosition = new Vector3(pos.x, pos.y, 0);
+		handle.localPosition = new Vector3(pos.x , pos.y, 0);
 	}
 }
