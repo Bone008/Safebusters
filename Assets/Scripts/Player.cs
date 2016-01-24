@@ -103,6 +103,7 @@ public class Player : MonoBehaviour
             targetPosition = new Vector3(0, centerY, 0) + 2 * cameraOffset;
         }
 
+#if UNITY_EDITORs
         // cheat for testing
         if (Input.GetKey(KeyCode.LeftAlt))
         {
@@ -114,6 +115,8 @@ public class Player : MonoBehaviour
         {
             transform.rotation = cameraInitialRotation;
         }
+#endif
+
         transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * cameraSpeed);
 
 
