@@ -38,11 +38,16 @@ public class LevelChallengePrefabs
     public GameObject SynchronousSlidersChallengeFront;
     public GameObject SynchronousSlidersChallengeBack;
     public bool SynchronousSlidersChallengeDecoratedBack;
-
+    
 	[Header("Accelerometer Challenge")]
 	public GameObject AccelerometerChallengeFront;
 	public GameObject AccelerometerChallengeBack;
 	public bool AccelerometerChallengeDecoratedBack;
+
+	[Header("Password Reels Challenge")]
+    public GameObject PasswordReelsChallengeFront;
+    public GameObject PasswordReelsChallengeBack;
+    public bool PasswordReelsChallengeDecoratedBack;
 
     public GameObject GetFrontPrefab(Type challengeType)
     {
