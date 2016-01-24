@@ -103,7 +103,7 @@ public class Player : MonoBehaviour
             targetPosition = new Vector3(0, centerY, 0) + 2 * cameraOffset;
         }
 
-#if UNITY_EDITORs
+#if UNITY_EDITOR
         // cheat for testing
         if (Input.GetKey(KeyCode.LeftAlt))
         {
