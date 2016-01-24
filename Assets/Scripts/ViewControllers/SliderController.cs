@@ -3,8 +3,8 @@ using System.Collections;
 
 public class SliderController : MonoBehaviour
 {
+    private const float BAR_EXTENT = 0.145f;
 
-    public Renderer barRenderer;
     public Transform handle;
 
     void Awake()
@@ -15,10 +15,8 @@ public class SliderController : MonoBehaviour
     /// <summary>Sets the value the slider is displaying (between 0 and 1).</summary>
     public void SetValue(float value)
     {
-        float extents = barRenderer.bounds.extents.y;
-
         Vector3 pos = handle.localPosition;
-        pos.y = Mathf.Lerp(-extents, extents, value);
+        pos.y = Mathf.Lerp(-BAR_EXTENT, BAR_EXTENT, value);
         handle.localPosition = pos;
     }
 
