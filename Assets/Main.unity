@@ -1858,6 +1858,11 @@ MonoBehaviour:
     AccelerometerChallengeBack: {fileID: 124302, guid: 696496b0c1aca0f4fbd192115b21b795,
       type: 2}
     AccelerometerChallengeDecoratedBack: 0
+    PasswordReelsChallengeFront: {fileID: 133812, guid: 5e326f117ab32dd4ca05589b1dd4bb3a,
+      type: 2}
+    PasswordReelsChallengeBack: {fileID: 160578, guid: ee005d390aa7f9b44ab82406e8ed56f6,
+      type: 2}
+    PasswordReelsChallengeDecoratedBack: 1
   Player1Cam: {fileID: 1528881150}
   Player2Cam: {fileID: 2063687263}
   neuroToxinParticleSystem:

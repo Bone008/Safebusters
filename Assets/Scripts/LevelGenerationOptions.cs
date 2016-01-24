@@ -21,7 +21,8 @@ public class LevelGenerationOptions
         typeof(InterconnectedDialChallenge),
 		typeof(SlidersKnobsChallenge),
         typeof(SynchronousSlidersChallenge),
-		typeof(AccelerometerChallenge)
+		typeof(AccelerometerChallenge),
+        typeof(PasswordReelsChallenge),
 	};
 
     // will be extended with additional parameters and logic later

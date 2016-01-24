@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using UnityEngine.UI;
 
 public class PasswordReelsChallenge : AbstractChallenge
 {
@@ -34,6 +35,9 @@ public class PasswordReelsChallenge : AbstractChallenge
             // start at random position
             reels[i].SetActiveLetterIndex(UnityEngine.Random.Range(0, reels[i].GetSlotCount()));
         }
+
+        // display password on back side
+        backGameObject.transform.Find("Canvas/PasswordText").GetComponent<Text>().text = password;
     }
 
     void Update()
@@ -47,17 +51,11 @@ public class PasswordReelsChallenge : AbstractChallenge
         else
         {
             // check for win condition
-            bool hasWon = true;
-            for(int i=0; i<PASSWORD_LENGTH; i++)
+            if(CheckPasswordCorrect())
             {
-                if(reels[i].GetActiveLetter() != password[i])
-                {
-                    hasWon = false;
-                    break;
-                }
-            }
-            if(hasWon)
-            {
+                reels[0].SetRotationSpeed(0);
+                reels[1].SetRotationSpeed(0);
+                reels[2].SetRotationSpeed(0);
                 safe.SolveChallenge();
                 return;
             }
@@ -75,5 +73,16 @@ public class PasswordReelsChallenge : AbstractChallenge
             reels[1].SetRotationSpeed(0.6f * MAX_ROTATION_SPEED);
             reels[2].SetRotationSpeed(velRight * MAX_ROTATION_SPEED);
         }
+    }
+
+    private bool CheckPasswordCorrect()
+    {
+        for (int i = 0; i < PASSWORD_LENGTH; i++)
+        {
+            if (reels[i].GetActiveLetter() != password[i])
+                return false;
+        }
+
+        return true;
     }
 }

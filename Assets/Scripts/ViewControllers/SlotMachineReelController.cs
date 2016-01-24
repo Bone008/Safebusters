@@ -26,8 +26,11 @@ public class SlotMachineReelController : MonoBehaviour
 
     void Update()
     {
-        currentAngle = (currentAngle + rotationSpeed * Time.deltaTime + 360.0f) % 360.0f;
-        transform.localRotation = Quaternion.Euler(-currentAngle, 0, 0) * initialRotation;
+        if (rotationSpeed != 0)
+        {
+            currentAngle = (currentAngle + rotationSpeed * Time.deltaTime + 360.0f) % 360.0f;
+            transform.localRotation = Quaternion.Euler(-currentAngle, 0, 0) * initialRotation;
+        }
     }
 
     public int GetSlotCount()
