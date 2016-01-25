@@ -133,7 +133,7 @@ public class Level : MonoBehaviour
             if (shouldActivate)
             {
                 safe.SetActive(true);
-                print(go.name+" is active at start");
+                //print(go.name+" is active at start");
                 currentlyActiveSafeCount++;
             }
             else {
@@ -159,12 +159,12 @@ public class Level : MonoBehaviour
                 if (!safes[rI].IsActive)
                 {
                     safes[rI].SetActive(true);
-                    print(safes[rI].gameObject.name + " is active at start (by force)");
+                    //print(safes[rI].gameObject.name + " is active at start (by force)");
                     currentlyActiveSafeCount++;
                 }
             }
         }
-        print("currently active safes count: " + currentlyActiveSafeCount);
+        //print("currently active safes count: " + currentlyActiveSafeCount);
     }
 
     // activates [amount] new safes of the same color as [color]

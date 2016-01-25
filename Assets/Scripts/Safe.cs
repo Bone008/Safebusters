@@ -53,7 +53,7 @@ public class Safe : MonoBehaviour
         // initially show the shutter when we are started in inactive state
         if (!active)
         {
-            print(name + " is initially inactive");
+            //print(name + " is initially inactive");
             shutter.gameObject.SetActive(true);
             protectivePanel.SetActive(true);
             shutterClosed = true;
