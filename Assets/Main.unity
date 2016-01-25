@@ -1853,11 +1853,11 @@ MonoBehaviour:
     SynchronousSlidersChallengeBack: {fileID: 172906, guid: 91db623486ce72e41906f7aa2d120e3c,
       type: 2}
     SynchronousSlidersChallengeDecoratedBack: 0
-    AccelerometerChallengeFront: {fileID: 155830, guid: 9dd8a74e5e3f25d44925b1a8bf4754a3,
+    AccelerometerChallengeFront: {fileID: 181602, guid: 3dec240da0f2d6c42ae91a481e36bb91,
       type: 2}
-    AccelerometerChallengeBack: {fileID: 124302, guid: 696496b0c1aca0f4fbd192115b21b795,
+    AccelerometerChallengeBack: {fileID: 154760, guid: 22128149984f895418564293acc7c9a0,
       type: 2}
-    AccelerometerChallengeDecoratedBack: 0
+    AccelerometerChallengeDecoratedBack: 1
     PasswordReelsChallengeFront: {fileID: 133812, guid: 5e326f117ab32dd4ca05589b1dd4bb3a,
       type: 2}
     PasswordReelsChallengeBack: {fileID: 160578, guid: ee005d390aa7f9b44ab82406e8ed56f6,
@@ -1871,7 +1871,6 @@ MonoBehaviour:
   safeContentPrefabs:
   - {fileID: 175472, guid: a32e7e6aef9a1d549a3da17652cf4082, type: 2}
   - {fileID: 158752, guid: 5143decd620518f4fa200be917b1b4f8, type: 2}
-
   iconSprites:
   - {fileID: 21300000, guid: d68459442f9c32847aa4f9470727706b, type: 3}
   - {fileID: 21300000, guid: 4f3c3cebd186b90428d8b75dfa70414b, type: 3}
