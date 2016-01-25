@@ -22,10 +22,26 @@ public class Level : MonoBehaviour
     public Sprite[] iconSprites = new Sprite[0];
     public float[] iconSpriteRotations = new float[0];
 
+    [SerializeField]
+    List<UnityEngine.UI.Text> endGUIPlayer1;
+    [SerializeField]
+    List<UnityEngine.UI.Text> endGUIPlayer2;
+    [SerializeField]
+    GameObject endGUICanvas;
+    
+
     [HideInInspector]
     public List<Safe> safes;
     [HideInInspector]
     public int currentLiveCount;
+    [HideInInspector]
+    public int safesOpened = 0;
+    [HideInInspector]
+    public int fails = 0;
+    float gameTime;
+
+    bool endOfGame = false;
+    float endOfLevelTimer = 5.0f;
 
     void Awake()
     {
@@ -37,6 +53,21 @@ public class Level : MonoBehaviour
 
         currentLiveCount = generationOptions.maxLives;
         GenerateLevel();
+    }
+
+    void Update() {
+        gameTime += Time.deltaTime;
+        if(endOfGame){
+            if (endOfLevelTimer > 0.0f)
+            {
+                endOfLevelTimer -= Time.deltaTime;
+                endGUIPlayer1[4].text = endOfLevelTimer + " seconds";
+                endGUIPlayer2[4].text = endOfLevelTimer + " seconds";
+            }
+            else {
+                Application.LoadLevel(0);
+            }
+        }
     }
 
     private void GenerateLevel()
@@ -162,6 +193,29 @@ public class Level : MonoBehaviour
                 print(safe.gameObject.name + " was activated!");
             }
         }
+    }
+
+    public void showEndGUI(bool won) {
+        endGUICanvas.SetActive(true);
+        endOfGame = true;
+        if (won)
+        {
+            endGUIPlayer1[0].text = "You WON!";
+            endGUIPlayer2[0].text = "You WON!";
+        }
+        else {
+            endGUIPlayer1[0].text = "You LOSE!";
+            endGUIPlayer2[0].text = "You LOSE!";
+        }
+        endGUIPlayer1[1].text = safesOpened+"/"+safes.Count;
+        endGUIPlayer2[1].text = safesOpened + "/" + safes.Count;
+
+        endGUIPlayer1[2].text = fails.ToString();
+        endGUIPlayer2[2].text = fails.ToString();
+
+        string minSec = string.Format("{0}:{1:00}", (int)gameTime / 60, (int)gameTime % 60);
+        endGUIPlayer1[3].text = minSec;
+        endGUIPlayer2[3].text = minSec;
     }
 
 }

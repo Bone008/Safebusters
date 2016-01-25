@@ -74,7 +74,10 @@ public class Safe : MonoBehaviour
             UpdateTimerText();
 
             //Only for debugging!
+#if UNITY_EDITOR
             if (Input.GetKeyUp(KeyCode.L)) FailChallenge();
+            if (Input.GetKeyUp(KeyCode.W)) SolveChallenge();
+#endif
         }
     }
 
@@ -99,8 +102,14 @@ public class Safe : MonoBehaviour
         //SetActive(false); <-- this is now done at the end of the coroutine
         challenge.enabled = false;
 
+        lvl.safesOpened++;
         //Activating new safes of same coloring
-        lvl.ActivateNewSafes(displayColor, numberOfSafesToActivate);
+        if (lvl.safesOpened < lvl.safes.Count) { 
+            lvl.ActivateNewSafes(displayColor, numberOfSafesToActivate);
+        }
+        else {
+            lvl.showEndGUI(true);
+        }
     }
     public void FailChallenge()
     {
@@ -108,9 +117,11 @@ public class Safe : MonoBehaviour
         if (lvl.currentLiveCount > 0)
         { //We still have tries left
             StartCoroutine(ActivateNeuroToxin());
+            lvl.fails++;
             lvl.currentLiveCount--;
         }
-        else { 
+        else {
+            lvl.showEndGUI(false);
         }
         remainingTime = maxTimer;
     }
