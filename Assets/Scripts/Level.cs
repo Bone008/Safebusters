@@ -38,10 +38,10 @@ public class Level : MonoBehaviour
     public int safesOpened = 0;
     [HideInInspector]
     public int fails = 0;
-    float gameTime;
 
-    bool endOfGame = false;
-    float endOfLevelTimer = 5.0f;
+    private float gameTime;
+    private bool endOfGame = false;
+    private float endOfLevelTimer = 15.0f;
 
     void Awake()
     {
@@ -61,8 +61,8 @@ public class Level : MonoBehaviour
             if (endOfLevelTimer > 0.0f)
             {
                 endOfLevelTimer -= Time.deltaTime;
-                endGUIPlayer1[4].text = endOfLevelTimer + " seconds";
-                endGUIPlayer2[4].text = endOfLevelTimer + " seconds";
+                endGUIPlayer1[4].text = endOfLevelTimer.ToString("F2") + " seconds";
+                endGUIPlayer2[4].text = endOfLevelTimer.ToString("F2") + " seconds";
             }
             else {
                 Application.LoadLevel(0);
