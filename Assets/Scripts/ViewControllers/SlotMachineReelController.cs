@@ -31,6 +31,18 @@ public class SlotMachineReelController : MonoBehaviour
             currentAngle = (currentAngle + rotationSpeed * Time.deltaTime + 360.0f) % 360.0f;
             transform.localRotation = Quaternion.Euler(-currentAngle, 0, 0) * initialRotation;
         }
+
+        // hide letters all letters
+        int aLI = GetActiveLetterIndex();
+        for(int i = 0; i < letterDisplays.Length; i++)
+        {
+            letterDisplays[i].enabled = false;
+        }
+
+        // show only the 3 letters in front
+        letterDisplays[(aLI + letterDisplays.Length - 1) % letterDisplays.Length].enabled = true;
+        letterDisplays[aLI].enabled = true;
+        letterDisplays[(aLI + 1) % letterDisplays.Length].enabled = true;
     }
 
     public int GetSlotCount()
