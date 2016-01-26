@@ -71,7 +71,7 @@ public class Safe : MonoBehaviour
             if (remainingTime < 0)
                 // TODO lose game; for now just reset to max value (easier testing when you're not constantly losing ...)
                 //remainingTime = maxTimer;
-                FailChallenge();
+                FailChallenge(true);
             UpdateTimerText();
         }
     }
