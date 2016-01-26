@@ -1,7 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
+﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class Safe : MonoBehaviour
 {
@@ -75,8 +76,8 @@ public class Safe : MonoBehaviour
 
             //Only for debugging!
 #if UNITY_EDITOR
-            if (Input.GetKeyUp(KeyCode.L)) FailChallenge();
-            if (Input.GetKeyUp(KeyCode.W)) SolveChallenge();
+            if (Input.GetKeyUp(KeyCode.L) && Input.GetKey(KeyCode.LeftControl)) FailChallenge();
+            if (Input.GetKeyUp(KeyCode.W) && Input.GetKey(KeyCode.LeftControl)) SolveChallenge();
 #endif
         }
     }
@@ -102,26 +103,24 @@ public class Safe : MonoBehaviour
         //SetActive(false); <-- this is now done at the end of the coroutine
         challenge.enabled = false;
 
-        lvl.safesOpened++;
-        //Activating new safes of same coloring
-        if (lvl.safesOpened < lvl.safes.Count) { 
+        if (lvl.safes.Any(s => !s.IsOpen)) { 
             lvl.ActivateNewSafes(displayColor, numberOfSafesToActivate);
         }
         else {
-            lvl.showEndGUI(true);
+            lvl.EndGame(true);
         }
     }
     public void FailChallenge()
     {
         GetComponent<AudioSource>().PlayOneShot(lostSound);
-        if (lvl.currentLiveCount > 0)
+        if (lvl.currentLifeCount > 0)
         { //We still have tries left
             StartCoroutine(ActivateNeuroToxin());
             lvl.fails++;
-            lvl.currentLiveCount--;
+            lvl.currentLifeCount--;
         }
         else {
-            lvl.showEndGUI(false);
+            lvl.EndGame(false);
         }
         remainingTime = maxTimer;
     }

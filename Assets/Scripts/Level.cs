@@ -33,9 +33,7 @@ public class Level : MonoBehaviour
     [HideInInspector]
     public List<Safe> safes;
     [HideInInspector]
-    public int currentLiveCount;
-    [HideInInspector]
-    public int safesOpened = 0;
+    public int currentLifeCount;
     [HideInInspector]
     public int fails = 0;
 
@@ -51,7 +49,7 @@ public class Level : MonoBehaviour
             return;
         }
 
-        currentLiveCount = generationOptions.maxLives;
+        currentLifeCount = generationOptions.maxLives;
         GenerateLevel();
     }
 
@@ -61,8 +59,8 @@ public class Level : MonoBehaviour
             if (endOfLevelTimer > 0.0f)
             {
                 endOfLevelTimer -= Time.deltaTime;
-                endGUIPlayer1[4].text = endOfLevelTimer.ToString("F2") + " seconds";
-                endGUIPlayer2[4].text = endOfLevelTimer.ToString("F2") + " seconds";
+                endGUIPlayer1[4].text = endOfLevelTimer.ToString("F1") + " seconds";
+                endGUIPlayer2[4].text = endOfLevelTimer.ToString("F1") + " seconds";
             }
             else {
                 Application.LoadLevel(0);
@@ -111,7 +109,7 @@ public class Level : MonoBehaviour
 			// initialize safe logic
 			Safe safe = go.GetComponent<Safe>();
 			safe.challenge = challenge;   
-            safe.SetMaxTimer(UnityEngine.Random.Range(30, 61));
+            safe.SetMaxTimer(UnityEngine.Random.Range(40, 61));
             safe.SpawnChallengeObjects(frontPrefab, backPrefab, decoratedBack);
 
             safe.SetBackwards(i % 2 == 1);
@@ -195,20 +193,26 @@ public class Level : MonoBehaviour
         }
     }
 
-    public void showEndGUI(bool won) {
+    public void EndGame(bool won) {
+        // deactivate all safes
+        foreach (Safe s in safes)
+        {
+            if (s.IsActive) s.SetActive(false);
+        }
+
         endGUICanvas.SetActive(true);
         endOfGame = true;
         if (won)
         {
-            endGUIPlayer1[0].text = "You WON!";
-            endGUIPlayer2[0].text = "You WON!";
+            endGUIPlayer1[0].text = "You WIN!";
+            endGUIPlayer2[0].text = "You WIN!";
         }
         else {
             endGUIPlayer1[0].text = "You LOSE!";
             endGUIPlayer2[0].text = "You LOSE!";
         }
-        endGUIPlayer1[1].text = safesOpened+"/"+safes.Count;
-        endGUIPlayer2[1].text = safesOpened + "/" + safes.Count;
+        endGUIPlayer1[1].text = safes.Count(s => s.IsOpen) + "/" + safes.Count;
+        endGUIPlayer2[1].text = safes.Count(s => s.IsOpen) + "/" + safes.Count;
 
         endGUIPlayer1[2].text = fails.ToString();
         endGUIPlayer2[2].text = fails.ToString();
