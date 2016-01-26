@@ -22,6 +22,7 @@ public class SlotMachineReelController : MonoBehaviour
     void Start()
     {
         initialRotation = transform.localRotation;
+        transform.localRotation = Quaternion.Euler(-currentAngle, 0, 0) * initialRotation;
     }
 
     void Update()
@@ -32,17 +33,12 @@ public class SlotMachineReelController : MonoBehaviour
             transform.localRotation = Quaternion.Euler(-currentAngle, 0, 0) * initialRotation;
         }
 
-        // hide letters all letters
-        int aLI = GetActiveLetterIndex();
+        // show only the 3 letters in front
+        int active = GetActiveLetterIndex();
         for(int i = 0; i < letterDisplays.Length; i++)
         {
-            letterDisplays[i].enabled = false;
+            letterDisplays[i].enabled = (i == active || i == (active + 1) % letterDisplays.Length || i == (active - 1 + letterDisplays.Length) % letterDisplays.Length);
         }
-
-        // show only the 3 letters in front
-        letterDisplays[(aLI + letterDisplays.Length - 1) % letterDisplays.Length].enabled = true;
-        letterDisplays[aLI].enabled = true;
-        letterDisplays[(aLI + 1) % letterDisplays.Length].enabled = true;
     }
 
     public int GetSlotCount()
