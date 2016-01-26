@@ -115,6 +115,10 @@ public class Player : MonoBehaviour
         {
             transform.rotation = cameraInitialRotation;
         }
+
+        // solve or fail for testing
+        if (Input.GetKeyUp(KeyCode.L) && Input.GetKey(KeyCode.LeftControl)) level.safes[focusedSafe].FailChallenge();
+        if (Input.GetKeyUp(KeyCode.W) && Input.GetKey(KeyCode.LeftControl)) level.safes[focusedSafe].SolveChallenge();
 #endif
 
         transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * cameraSpeed);
