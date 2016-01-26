@@ -28,6 +28,8 @@ public class Level : MonoBehaviour
     List<UnityEngine.UI.Text> endGUIPlayer2;
     [SerializeField]
     GameObject endGUICanvas;
+	[SerializeField]
+	GameObject pauseCanvas;
     
 
     [HideInInspector]
@@ -54,6 +56,17 @@ public class Level : MonoBehaviour
     }
 
     void Update() {
+		// back to main menu
+		if (Input.GetKeyDown (KeyCode.Escape)) {
+			Application.LoadLevel("Menu");
+		}
+
+		// pause
+		if (Input.GetKeyDown (KeyCode.Pause)) {
+			Time.timeScale = 1 - Time.timeScale;
+			pauseCanvas.SetActive(!pauseCanvas.activeSelf);
+		}
+
         gameTime += Time.deltaTime;
         if(endOfGame){
             if (endOfLevelTimer > 0.0f)
