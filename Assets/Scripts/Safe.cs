@@ -104,14 +104,14 @@ public class Safe : MonoBehaviour
             lvl.EndGame(true);
         }
     }
-    public void FailChallenge()
+
+    public void FailChallenge(bool wasTimer = false)
     {
         GetComponent<AudioSource>().PlayOneShot(lostSound);
         if (lvl.currentLifeCount > 0)
         { //We still have tries left
             StartCoroutine(ActivateNeuroToxin());
-            lvl.fails++;
-            lvl.currentLifeCount--;
+            lvl.RecordFail(challenge.GetHumanName(), wasTimer);
         }
         else {
             lvl.EndGame(false);

@@ -43,4 +43,21 @@ public abstract class AbstractChallenge : MonoBehaviour
     {
         hasFocusBack = flag;
     }
+
+    public string GetHumanName()
+    {
+        string name = GetType().Name.Replace("Challenge", "");
+        // insert spaces between words
+        for(int i=1; i<name.Length; i++)
+        {
+            if(char.IsUpper(name, i))
+            {
+                name = name.Insert(i, " ");
+                i++;
+            }
+        }
+
+        return name;
+    }
+
 }

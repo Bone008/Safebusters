@@ -36,8 +36,9 @@ public class Level : MonoBehaviour
     public List<Safe> safes;
     [HideInInspector]
     public int currentLifeCount;
-    [HideInInspector]
-    public int fails = 0;
+    
+
+    private List<string> fails = new List<string>();
 
     private float gameTime;
     private bool endOfGame = false;
@@ -96,7 +97,8 @@ public class Level : MonoBehaviour
 		// create safe gameobjects and logic
 		safes = new List<Safe>();
         int currentlyActiveSafeCount = 0;
-        for (int i = 0; i < generationOptions.safesToGenerate; i++)
+        int i = 0;
+        foreach(Type challengeType in EnumerateRandomChallenges().Take(generationOptions.safesToGenerate))
         {
 			// create GameObject
             var go = Instantiate(safePrefab, Vector3.zero, Quaternion.identity) as GameObject;
@@ -110,9 +112,9 @@ public class Level : MonoBehaviour
             //spawn in a content for the safe
             GameObject.Instantiate(safeContentPrefabs[UnityEngine.Random.Range(0,safeContentPrefabs.Length)], go.transform.FindChild("safeContent").position,go.transform.FindChild("safeContent").rotation);
 
-			// choose challenge
-            Type challengeType = generationOptions.availableChallenges[UnityEngine.Random.Range(0, generationOptions.availableChallenges.Length)];
+			// instantiate the challenge
             AbstractChallenge challenge = (AbstractChallenge)go.AddComponent(challengeType);
+            Debug.Log(challenge.GetHumanName());
 
 			// find challenge-prefabs
             GameObject frontPrefab = challengePrefabs.GetFrontPrefab(challengeType);
@@ -159,6 +161,7 @@ public class Level : MonoBehaviour
             safe.SetNumberOfSafesToActivate(1);
 
             safes.Add(safe);
+            i++;
         }
 
         if (generationOptions.activateRandomly)
@@ -176,6 +179,24 @@ public class Level : MonoBehaviour
             }
         }
         //print("currently active safes count: " + currentlyActiveSafeCount);
+    }
+
+    private IEnumerable<Type> EnumerateRandomChallenges()
+    {
+        List<Type> remainingChallenges = generationOptions.availableChallenges.ToList();
+
+        while(true)
+        {
+            // when all challenges have been consumed, refill the list with all of them again
+            if (remainingChallenges.Count == 0)
+                remainingChallenges.AddRange(generationOptions.availableChallenges);
+
+            // pick a random challenge from the list and return it
+            int index = UnityEngine.Random.Range(0, remainingChallenges.Count);
+            Type element = remainingChallenges[index];
+            remainingChallenges.RemoveAt(index);
+            yield return element;
+        }
     }
 
     // activates [amount] new safes of the same color as [color]
@@ -206,6 +227,12 @@ public class Level : MonoBehaviour
         }
     }
 
+    public void RecordFail(string cause, bool wasTimer)
+    {
+        currentLifeCount--;
+        fails.Add(cause + (wasTimer ? " (timer)" : ""));
+    }
+
     public void EndGame(bool won) {
         // deactivate all safes
         foreach (Safe s in safes)
@@ -227,8 +254,8 @@ public class Level : MonoBehaviour
         endGUIPlayer1[1].text = safes.Count(s => s.IsOpen) + "/" + safes.Count;
         endGUIPlayer2[1].text = safes.Count(s => s.IsOpen) + "/" + safes.Count;
 
-        endGUIPlayer1[2].text = fails.ToString();
-        endGUIPlayer2[2].text = fails.ToString();
+        endGUIPlayer1[2].text = string.Join("\n", fails.ToArray());
+        endGUIPlayer2[2].text = string.Join("\n", fails.ToArray());
 
         string minSec = string.Format("{0}:{1:00}", (int)gameTime / 60, (int)gameTime % 60);
         endGUIPlayer1[3].text = minSec;
