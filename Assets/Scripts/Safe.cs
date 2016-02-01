@@ -50,7 +50,7 @@ public class Safe : MonoBehaviour
 
     void Start()
     {
-        lvl = GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>(); 
+        lvl = GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>();
         // initially show the shutter when we are started in inactive state
         if (!active)
         {
@@ -171,10 +171,35 @@ public class Safe : MonoBehaviour
 
     public void SetFocus(bool isPlayer2, bool flag)
     {
-        if (isPlayer2 == backwards)
-            challenge.SetFrontFocus(flag);
+        Text t;
+        if (isPlayer2)
+            t = lvl.player2Text;
         else
+            t = lvl.player1Text;
+
+        if (isPlayer2 == backwards)
+        {
+            challenge.SetFrontFocus(flag);
+            // set texts
+            string frontText = "";
+            if (flag)
+            {
+                frontText = lvl.challengePrefabs.GetFrontText(challenge.GetType());
+            }
+            t.text = frontText;
+        }
+        else
+        {
             challenge.SetBackFocus(flag);
+            // set texts
+            string backText = "";
+            if (flag)
+            {
+                backText = lvl.challengePrefabs.GetBackText(challenge.GetType());
+            }
+            t.text = backText;
+        }
+        
     }
 
     public void SetMaxTimer(float time)

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +37,9 @@ public class Level : MonoBehaviour
     public List<Safe> safes;
     [HideInInspector]
     public int currentLifeCount;
-    
+
+    public Text player1Text;
+    public Text player2Text;
 
     private List<string> fails = new List<string>();
 
