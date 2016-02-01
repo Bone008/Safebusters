@@ -171,33 +171,41 @@ public class Safe : MonoBehaviour
 
     public void SetFocus(bool isPlayer2, bool flag)
     {
-        Text t;
-        if (isPlayer2)
-            t = lvl.player2Text;
-        else
-            t = lvl.player1Text;
+        Text t = null;
+        if (lvl)
+        {
+            if (isPlayer2)
+                t = lvl.player2Text;
+            else
+                t = lvl.player1Text;
+        }
 
         if (isPlayer2 == backwards)
         {
             challenge.SetFrontFocus(flag);
             // set texts
-            string frontText = "";
-            if (flag)
+            if (t)
             {
-                frontText = lvl.challengePrefabs.GetFrontText(challenge.GetType());
+                string frontText = "";
+                if (flag)
+                {
+                    frontText = lvl.challengePrefabs.GetFrontText(challenge.GetType());
+                }
+                t.text = frontText;
             }
-            t.text = frontText;
         }
         else
         {
             challenge.SetBackFocus(flag);
             // set texts
-            string backText = "";
-            if (flag)
-            {
-                backText = lvl.challengePrefabs.GetBackText(challenge.GetType());
+            if (t) { 
+                string backText = "";
+                if (flag)
+                {
+                    backText = lvl.challengePrefabs.GetBackText(challenge.GetType());
+                }
+                t.text = backText;
             }
-            t.text = backText;
         }
         
     }
