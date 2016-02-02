@@ -55,6 +55,12 @@ public class Level : MonoBehaviour
             return;
         }
 
+        if (PlayerPrefs.GetInt("EnableTutorial", 1) == 0)
+        {
+            foreach (var go in GameObject.FindGameObjectsWithTag("Tutorial"))
+                go.SetActive(false);
+        }
+
         currentLifeCount = generationOptions.maxLives;
         GenerateLevel();
     }

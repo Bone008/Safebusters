@@ -1,9 +1,8 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
+﻿using System;
 using System.IO;
 using System.IO.Ports;
-using System;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class Menu : MonoBehaviour {
 
@@ -12,22 +11,35 @@ public class Menu : MonoBehaviour {
 
 	public Text player1StatusText;
 	public Text player2StatusText;
+    public Text errorText;
+
+    public Toggle showHelpToggle;
 
 	void Start()
 	{
-		// Set ports initially on keyboard for both players
-		PlayerPrefs.SetString("Player1Port", "Keyboard");
-		PlayerPrefs.SetString("Player2Port", "Keyboard");
+        showHelpToggle.isOn = (PlayerPrefs.GetInt("EnableTutorial", 1) > 0 ? true : false);
+        showHelpToggle.onValueChanged.AddListener(flag => PlayerPrefs.SetInt("EnableTutorial", (flag ? 1 : 0)));
+
 
 		// Add active ports to both dropdowns
 		foreach (string port in SerialPort.GetPortNames()) {
 			Dropdown.OptionData portname = new Dropdown.OptionData(port);
 			player1PortSelection.options.Add(portname);
 			player2PortSelection.options.Add(portname);
+
+            // if port was previously selected, select it now
+            if (PlayerPrefs.GetString("Player1Port", "Keyboard") == port)
+                player1PortSelection.value = player1PortSelection.options.Count - 1;
+            if (PlayerPrefs.GetString("Player2Port", "Keyboard") == port)
+                player2PortSelection.value = player2PortSelection.options.Count - 1;
         }
 
         player1PortSelection.onValueChanged.AddListener(_ => TestPlayer1());
         player2PortSelection.onValueChanged.AddListener(_ => TestPlayer2());
+
+        // initially test selected ports
+        TestPlayer1();
+        TestPlayer2();
 	}
 
     private bool testPort(string portName)
@@ -44,31 +56,32 @@ public class Menu : MonoBehaviour {
             port.WriteLine("l 3 1");
             string response = port.ReadLine();
             if (response != "Done.")
-                throw new IOException("Invalid response.");
+                throw new IOException("Invalid response: " + response);
 
             // leave the LED on for a bit so the controller can be visibly identified;
-            // yes, we are freezing the main thread here, but it only happens quickly on a seldom UI action
-            System.Threading.Thread.Sleep(100);
+            // yes, we are freezing the main thread here, but it only happens briefly and on a seldom UI action
+            System.Threading.Thread.Sleep(150);
 
             port.WriteLine("l 3 0");
             port.ReadLine();
-
             return true;
         }
         catch (IOException e)
         {
-            Debug.LogWarning("Error connecting to port " + portName + ": " + e.Message);
+            Debug.LogWarning(errorText.text = "Error connecting to port " + portName + ": " + e.Message);
         }
         catch (TimeoutException e)
         {
-            Debug.LogWarning("Controller on port " + portName + " caused a timeout.");
+            Debug.LogWarning(errorText.text = "Controller on port " + portName + " caused a timeout.");
         }
 
         return false;
     }
 
 	public void TestPlayer1()
-	{
+    {
+        errorText.text = "";
+
 		// update status depending on selected port
 		string portName = player1PortSelection.captionText.text;
 		if (portName == "Keyboard") {
@@ -89,7 +102,9 @@ public class Menu : MonoBehaviour {
 	}
 
 	public void TestPlayer2()
-	{
+    {
+        errorText.text = "";
+
 		// update status depending on selected port
 		string portName = player2PortSelection.captionText.text;
 		if (portName == "Keyboard") {
