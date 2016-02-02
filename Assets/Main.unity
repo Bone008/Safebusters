@@ -2952,15 +2952,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   safePrefab: {fileID: 179976, guid: 134d0307f24698f4f8567ab8728d712b, type: 2}
   generationOptions:
-    safesToGenerate: 12
-    safesPerRow: 3
+    safesToGenerate: 16
+    safesPerRow: 4
     safesActiveAtStart: 4
     activateRandomly: 0
     maxLives: 3
     punishmentDuration: 5
+    minTimer: 45
+    maxTimer: 60
     colorGroups:
     - {r: 1, g: 0, b: 0, a: 0}
-    - {r: .903448224, g: 1, b: 0, a: 0}
+  generationOptionsEasy:
+    safesToGenerate: 12
+    safesPerRow: 3
+    safesActiveAtStart: 2
+    activateRandomly: 0
+    maxLives: 6
+    punishmentDuration: 3
+    minTimer: 70
+    maxTimer: 90
+    colorGroups:
+    - {r: 1, g: 0, b: 0, a: 0}
   challengePrefabs:
     ButtonChallengeFront: {fileID: 110780, guid: 5f3e4695a181ba94d976c2b1bad5ec37,
       type: 2}

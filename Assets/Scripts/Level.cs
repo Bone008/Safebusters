@@ -13,6 +13,7 @@ public class Level : MonoBehaviour
 
     public GameObject safePrefab;
     public LevelGenerationOptions generationOptions = new LevelGenerationOptions();
+    public LevelGenerationOptions generationOptionsEasy = new LevelGenerationOptions();
     public LevelChallengePrefabs challengePrefabs = new LevelChallengePrefabs();
     
     public GameObject Player1Cam;
@@ -59,6 +60,12 @@ public class Level : MonoBehaviour
         {
             foreach (var go in GameObject.FindGameObjectsWithTag("Tutorial"))
                 go.SetActive(false);
+        }
+
+        // if started with easy difficulty, replace generation options with easy variant
+        if(PlayerPrefs.GetInt("Difficulty") == 1)
+        {
+            generationOptions = generationOptionsEasy;
         }
 
         currentLifeCount = generationOptions.maxLives;
@@ -133,7 +140,7 @@ public class Level : MonoBehaviour
 			// initialize safe logic
 			Safe safe = go.GetComponent<Safe>();
 			safe.challenge = challenge;   
-            safe.SetMaxTimer(UnityEngine.Random.Range(40, 61));
+            safe.SetMaxTimer(UnityEngine.Random.Range(generationOptions.minTimer, generationOptions.maxTimer));
             safe.SpawnChallengeObjects(frontPrefab, backPrefab, decoratedBack);
 
             safe.SetBackwards(i % 2 == 1);

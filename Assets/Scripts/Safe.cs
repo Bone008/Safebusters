@@ -298,7 +298,9 @@ public class Safe : MonoBehaviour
         blur1.enabled = true;
         blur2.enabled = true;
 
+        lvl.neuroToxinParticleSystem[0].GetComponent<ParticleSystem>().time = 0;
         lvl.neuroToxinParticleSystem[0].GetComponent<ParticleSystem>().Play();
+        lvl.neuroToxinParticleSystem[1].GetComponent<ParticleSystem>().time = 0;
         lvl.neuroToxinParticleSystem[1].GetComponent<ParticleSystem>().Play();
 
         float translationSpeed = 0.14f;

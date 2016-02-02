@@ -14,12 +14,17 @@ public class Menu : MonoBehaviour {
     public Text errorText;
 
     public Toggle showHelpToggle;
+    public Button difficultyButton1;
+    public Button difficultyButton2;
 
 	void Start()
 	{
         showHelpToggle.isOn = (PlayerPrefs.GetInt("EnableTutorial", 1) > 0 ? true : false);
         showHelpToggle.onValueChanged.AddListener(flag => PlayerPrefs.SetInt("EnableTutorial", (flag ? 1 : 0)));
 
+        SetDifficulty(PlayerPrefs.GetInt("Difficulty", 1));
+        difficultyButton1.onClick.AddListener(() => SetDifficulty(1));
+        difficultyButton2.onClick.AddListener(() => SetDifficulty(2));
 
 		// Add active ports to both dropdowns
 		foreach (string port in SerialPort.GetPortNames()) {
@@ -41,6 +46,13 @@ public class Menu : MonoBehaviour {
         TestPlayer1();
         TestPlayer2();
 	}
+
+    private void SetDifficulty(int value)
+    {
+        difficultyButton1.GetComponent<Image>().color = (value == 1 ? Color.cyan : Color.white);
+        difficultyButton2.GetComponent<Image>().color = (value == 2 ? Color.cyan : Color.white);
+        PlayerPrefs.SetInt("Difficulty", value);
+    }
 
     private bool testPort(string portName)
     {
