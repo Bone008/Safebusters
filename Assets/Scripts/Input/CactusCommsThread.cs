@@ -36,6 +36,7 @@ public class CactusCommsThread
 
 
     private const float ACCEL_GRAVITATION_NORM = 0.5f;
+    private const int SMOOTHING_SAMPLES = 5;
 
     private readonly float refreshInterval;
     private SerialPort port;
@@ -51,6 +52,7 @@ public class CactusCommsThread
     private CactusButton lastHeldButtons = 0;
     private float lastSentIntensity = 0;
     private int lastSentLedFlags = 0;
+    private Queue<float>[] analogValueHistory;
 
     public bool IsConnected { get { return port != null; } }
 
@@ -83,6 +85,13 @@ public class CactusCommsThread
         // push default snapshots at the beginning so they are never null
         InputSnapshot = new InSnapshot { analogInputs = new float[4] };
         OutputSnapshot = new OutSnapshot();
+
+        analogValueHistory = new Queue<float>[4];
+        for (int i = 0; i < 4; i++)
+        {
+            analogValueHistory[i] = new Queue<float>(SMOOTHING_SAMPLES);
+            for (int c = 0; c < SMOOTHING_SAMPLES; c++) analogValueHistory[i].Enqueue(0);
+        }
     }
 
     public CactusButton? PollButtonPress()
@@ -184,6 +193,7 @@ public class CactusCommsThread
                                      .Select(str => int.Parse(str, NumberStyles.HexNumber))
                                      .Select(num => 1.0f - num / 4096.0f)
                                      .ToArray();
+        SmoothAnalog(input.analogInputs);
 
         // read microphone
         port.Write("s");
@@ -201,6 +211,21 @@ public class CactusCommsThread
         input.acceleration = new Vector3(-accelCoords[1], accelCoords[2], -accelCoords[0]) / ACCEL_GRAVITATION_NORM;
 
         return input;
+    }
+
+
+    private void SmoothAnalog(float[] values)
+    {
+        for(int i=0; i<values.Length; i++)
+        {
+            // push new sample on history and remove oldest sample
+            Queue<float> history = analogValueHistory[i];
+            history.Dequeue();
+            history.Enqueue(values[i]);
+
+            // smoothed value is average of last samples
+            values[i] = history.Average();
+        }
     }
 
 
